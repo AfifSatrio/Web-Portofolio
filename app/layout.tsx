@@ -1,0 +1,30 @@
+import type { Metadata } from "next";
+import { Archivo_Black } from "next/font/google";
+import "./globals.css";
+import { AuthProvider } from "@/context/AuthContext";
+
+const archivoBlack = Archivo_Black({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-archivo",
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  title: "Personal Portfolio | Developer",
+  description: "Minimalist monochrome developer portfolio showcasing technical projects, skills, and expertise.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="id" className={`${archivoBlack.variable}`}>
+      <body className="bg-black text-white antialiased min-h-screen flex flex-col">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
+    </html>
+  );
+}
