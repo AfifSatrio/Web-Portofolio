@@ -10,7 +10,9 @@ import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { ArrowLeft, Save } from "lucide-react";
 import { DUMMY_PROJECTS } from "@/lib/dummy-data";
-import { supabase } from "@/lib/supabase";
+import { Project } from "@/types";
+import { adminFetch } from "@/lib/admin-api";
+import { notifyContentRefresh } from "@/lib/content-refresh";
 
 export default function EditProjectPage() {
   const router = useRouter();
@@ -32,21 +34,19 @@ export default function EditProjectPage() {
   useEffect(() => {
     async function loadProject() {
       try {
-        const { data, error } = await supabase
-          .from("projects")
-          .select("*")
-          .eq("id", projectId)
-          .single();
+        const { project } = await adminFetch<{ project: Project }>(
+          `/api/admin/projects/${projectId}`
+        );
 
-        if (!error && data) {
+        if (project) {
           setFormData({
-            title: data.title || "",
-            description: data.description || "",
-            thumbnail_url: data.thumbnail_url || "",
-            tech_stack: (data.tech_stack || []).join(", "),
-            demo_url: data.demo_url || "",
-            repo_url: data.repo_url || "",
-            display_order: String(data.display_order || 1),
+            title: project.title || "",
+            description: project.description || "",
+            thumbnail_url: project.thumbnail_url || "",
+            tech_stack: (project.tech_stack || []).join(", "),
+            demo_url: project.demo_url || "",
+            repo_url: project.repo_url || "",
+            display_order: String(project.display_order || 1),
           });
           setLoading(false);
           return;
@@ -94,13 +94,17 @@ export default function EditProjectPage() {
     };
 
     try {
-      await supabase.from("projects").update(payload).eq("id", projectId);
+      await adminFetch(`/api/admin/projects/${projectId}`, {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+      });
+      notifyContentRefresh();
+      router.push("/admin/projects");
     } catch (err) {
       console.log("Supabase update error:", err);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setIsSubmitting(false);
-    router.push("/admin/projects");
   };
 
   if (loading) {
@@ -122,7 +126,9 @@ export default function EditProjectPage() {
       </Link>
 
       <div className="border-b border-mono-700 pb-4">
-        <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">// EDIT ITEM</span>
+        <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">
+          {"// EDIT ITEM"}
+        </span>
         <h1 className="font-archivo text-3xl font-black uppercase text-white tracking-tight mt-1">
           EDIT PROYEK
         </h1>
@@ -186,7 +192,7 @@ export default function EditProjectPage() {
           className="w-full gap-2 mt-4"
         >
           <Save className="w-4 h-4" />
-          <span>{isSubmitting ? "MENYIMPAN..." : "PERBAARUI PROYEK"}</span>
+          <span>{isSubmitting ? "MENYIMPAN..." : "PERBARUI PROYEK"}</span>
         </Button>
       </form>
     </div>

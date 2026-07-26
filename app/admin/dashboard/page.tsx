@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { FolderKanban, Wrench, UserCheck, Plus, ExternalLink } from "lucide-react";
 import { DUMMY_PROJECTS, DUMMY_SKILLS } from "@/lib/dummy-data";
-import { supabase } from "@/lib/supabase";
+import { adminFetch } from "@/lib/admin-api";
 
 export default function AdminDashboardPage() {
   const [projectCount, setProjectCount] = useState<number>(DUMMY_PROJECTS.length);
@@ -17,11 +17,11 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     async function fetchCounts() {
       try {
-        const { count: pCount } = await supabase.from("projects").select("*", { count: "exact", head: true });
-        if (pCount !== null) setProjectCount(pCount);
-
-        const { count: sCount } = await supabase.from("skills").select("*", { count: "exact", head: true });
-        if (sCount !== null) setSkillCount(sCount);
+        const data = await adminFetch<{ projectCount: number; skillCount: number }>(
+          "/api/admin/dashboard"
+        );
+        setProjectCount(data.projectCount);
+        setSkillCount(data.skillCount);
       } catch (err) {
         console.log("Using fallback counts:", err);
       }
@@ -33,7 +33,9 @@ export default function AdminDashboardPage() {
     <div className="flex flex-col gap-8 max-w-6xl">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-mono-700 pb-6">
         <div>
-          <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">// DASHBOARD OVERVIEW</span>
+          <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">
+            {"// DASHBOARD OVERVIEW"}
+          </span>
           <h1 className="font-archivo text-3xl md:text-4xl font-black uppercase text-white tracking-tight mt-1">
             RINGKASAN PORTFOLIO
           </h1>
@@ -102,7 +104,7 @@ export default function AdminDashboardPage() {
 
       <div className="p-6 bg-mono-900 border border-mono-700 rounded-[6px] flex flex-col gap-3">
         <h3 className="font-archivo text-lg font-bold uppercase text-white">
-          // PETUNJUK PENGGUNAAN ADMIN
+          {"// PETUNJUK PENGGUNAAN ADMIN"}
         </h3>
         <ul className="text-xs text-mono-500 space-y-2 font-sans list-disc list-inside">
           <li>Seluruh perubahan data proyek, skill, dan bio akan langsung tersimpan ke Supabase Database.</li>

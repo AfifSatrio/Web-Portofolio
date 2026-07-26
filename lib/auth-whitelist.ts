@@ -5,7 +5,11 @@
 export function isEmailWhitelisted(email: string | null | undefined): boolean {
   if (!email) return false;
   
-  const whitelistString = process.env.ADMIN_WHITELIST_EMAILS || "";
+  const whitelistString =
+    process.env.NEXT_PUBLIC_ADMIN_WHITELIST_EMAILS ||
+    process.env.ADMIN_WHITELIST_EMAILS ||
+    "";
+    
   const whitelistedEmails = whitelistString
     .split(",")
     .map((e) => e.trim().toLowerCase())

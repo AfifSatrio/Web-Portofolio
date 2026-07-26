@@ -54,7 +54,9 @@ export default function AdminLoginPage() {
       {/* Login Form Container */}
       <div className="max-w-md w-full mx-auto bg-mono-900 border border-mono-700 p-8 md:p-10 rounded-[8px] z-10 flex flex-col gap-6 shadow-2xl">
         <div className="flex flex-col gap-2 text-center">
-          <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">// PRIVATE ACCESS ONLY</span>
+          <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">
+            {"// PRIVATE ACCESS ONLY"}
+          </span>
           <h1 className="font-archivo text-3xl font-black uppercase text-white tracking-tight">
             ADMIN LOGIN
           </h1>

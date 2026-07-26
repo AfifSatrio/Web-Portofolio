@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { ArrowLeft, Save } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { adminFetch } from "@/lib/admin-api";
+import { notifyContentRefresh } from "@/lib/content-refresh";
 
 export default function NewProjectPage() {
   const router = useRouter();
@@ -43,13 +44,17 @@ export default function NewProjectPage() {
     };
 
     try {
-      await supabase.from("projects").insert([payload]);
+      await adminFetch("/api/admin/projects", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+      notifyContentRefresh();
+      router.push("/admin/projects");
     } catch (err) {
-      console.log("Supabase insert error (fallback mode active):", err);
+      console.log("Supabase insert error:", err);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setIsSubmitting(false);
-    router.push("/admin/projects");
   };
 
   return (
@@ -63,7 +68,9 @@ export default function NewProjectPage() {
       </Link>
 
       <div className="border-b border-mono-700 pb-4">
-        <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">// CREATE NEW</span>
+        <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">
+          {"// CREATE NEW"}
+        </span>
         <h1 className="font-archivo text-3xl font-black uppercase text-white tracking-tight mt-1">
           TAMBAH PROYEK BARU
         </h1>

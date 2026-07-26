@@ -2,13 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
-import { Plus, Edit3, Trash2, ExternalLink, Github } from "lucide-react";
+import { Plus, Edit3, Trash2 } from "lucide-react";
 import { Project } from "@/types";
 import { DUMMY_PROJECTS } from "@/lib/dummy-data";
-import { supabase } from "@/lib/supabase";
+import { adminFetch } from "@/lib/admin-api";
+import { notifyContentRefresh } from "@/lib/content-refresh";
 
 export default function AdminProjectsPage() {
   const [projects, setProjects] = useState<Project[]>(DUMMY_PROJECTS);
@@ -20,13 +22,10 @@ export default function AdminProjectsPage() {
 
   const fetchProjects = async () => {
     try {
-      const { data, error } = await supabase
-        .from("projects")
-        .select("*")
-        .order("display_order", { ascending: true });
+      const data = await adminFetch<{ projects: Project[] }>("/api/admin/projects");
 
-      if (!error && data && data.length > 0) {
-        setProjects(data as Project[]);
+      if (data.projects.length > 0) {
+        setProjects(data.projects);
       }
     } catch (err) {
       console.log("Error fetching from Supabase, using local state:", err);
@@ -39,12 +38,12 @@ export default function AdminProjectsPage() {
     if (!confirm("Apakah Anda yakin ingin menghapus proyek ini?")) return;
 
     try {
-      await supabase.from("projects").delete().eq("id", id);
+      await adminFetch<null>(`/api/admin/projects/${id}`, { method: "DELETE" });
+      setProjects(projects.filter((p) => p.id !== id));
+      notifyContentRefresh();
     } catch (err) {
       console.error(err);
     }
-
-    setProjects(projects.filter((p) => p.id !== id));
   };
 
   return (
@@ -53,7 +52,7 @@ export default function AdminProjectsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-mono-700 pb-6">
         <div>
           <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">
-            // MANAGE CONTENT
+            {"// MANAGE CONTENT"}
           </span>
           <h1 className="font-archivo text-3xl font-black uppercase text-white tracking-tight mt-1">
             DAFTAR PROYEK
@@ -77,9 +76,12 @@ export default function AdminProjectsPage() {
           {projects.map((project) => (
             <Card key={project.id} hoverEffect={false} className="p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
               <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-                <img
+                <Image
                   src={project.thumbnail_url}
                   alt={project.title}
+                  width={96}
+                  height={64}
+                  unoptimized
                   className="w-24 h-16 object-cover border border-mono-700 rounded-[4px] bg-mono-900 shrink-0"
                 />
                 <div className="flex flex-col gap-2">

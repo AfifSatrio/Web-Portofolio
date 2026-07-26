@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { User, signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
-import { isEmailWhitelisted } from "@/lib/auth-whitelist";
 
 interface AuthContextType {
   user: User | null;
@@ -30,20 +29,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      if (currentUser && currentUser.email) {
-        const whitelisted = isEmailWhitelisted(currentUser.email);
-        setIsWhitelisted(whitelisted);
-        if (!whitelisted) {
-          setAuthError("Email Anda tidak terdaftar dalam whitelist admin.");
-        } else {
-          setAuthError(null);
-        }
-      } else {
-        setIsWhitelisted(false);
+    async function verifyAdmin(currentUser: User) {
+      const token = await currentUser.getIdToken();
+      const response = await fetch("/api/admin/session", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(payload?.error || "Email Anda tidak terdaftar dalam whitelist admin.");
       }
-      setLoading(false);
+    }
+
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setUser(currentUser);
+      setLoading(true);
+
+      if (!currentUser) {
+        setIsWhitelisted(false);
+        setAuthError(null);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        await verifyAdmin(currentUser);
+        setIsWhitelisted(true);
+        setAuthError(null);
+      } catch (err) {
+        setIsWhitelisted(false);
+        setAuthError(err instanceof Error ? err.message : "Email Anda tidak terdaftar dalam whitelist admin.");
+      } finally {
+        setLoading(false);
+      }
     });
 
     return () => unsubscribe();
@@ -53,11 +73,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setAuthError(null);
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      const email = result.user.email;
-      const whitelisted = isEmailWhitelisted(email);
+      const token = await result.user.getIdToken();
+      const response = await fetch("/api/admin/session", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      if (!whitelisted) {
-        setAuthError("Akses Ditolak: Email (" + email + ") tidak terdaftar di ADMIN_WHITELIST_EMAILS.");
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+        setAuthError(payload?.error || "Akses ditolak. Email tidak terdaftar di whitelist admin.");
         await firebaseSignOut(auth);
         setIsWhitelisted(false);
         setUser(null);

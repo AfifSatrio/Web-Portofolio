@@ -3,7 +3,6 @@
 import React, { Suspense, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
-import { ComputerModel } from "./ComputerModel";
 import { Monitor } from "lucide-react";
 
 function SceneContent() {
@@ -32,8 +31,6 @@ function SceneContent() {
       <directionalLight position={[5, 8, 5]} intensity={2.5} color="#ffffff" />
       <directionalLight position={[-5, -2, -5]} intensity={0.8} color="#7A7A7A" />
       <pointLight position={[0, 0, 3]} intensity={1.5} color="#ffffff" />
-
-      <ComputerModel scrollProgress={scrollProgress} />
 
       <OrbitControls
         enableZoom={false}

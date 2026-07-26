@@ -8,7 +8,8 @@ import { Card } from "@/components/ui/Card";
 import { Plus, Trash2, Save } from "lucide-react";
 import { Skill } from "@/types";
 import { DUMMY_SKILLS } from "@/lib/dummy-data";
-import { supabase } from "@/lib/supabase";
+import { adminFetch } from "@/lib/admin-api";
+import { notifyContentRefresh } from "@/lib/content-refresh";
 
 export default function AdminSkillsPage() {
   const [skills, setSkills] = useState<Skill[]>(DUMMY_SKILLS);
@@ -21,9 +22,9 @@ export default function AdminSkillsPage() {
 
   const fetchSkills = async () => {
     try {
-      const { data, error } = await supabase.from("skills").select("*").order("category");
-      if (!error && data && data.length > 0) {
-        setSkills(data as Skill[]);
+      const data = await adminFetch<{ skills: Skill[] }>("/api/admin/skills");
+      if (data.skills.length > 0) {
+        setSkills(data.skills);
       }
     } catch (err) {
       console.log("Using local skills fallback:", err);
@@ -42,23 +43,26 @@ export default function AdminSkillsPage() {
     };
 
     try {
-      await supabase.from("skills").insert([newSkill]);
+      const data = await adminFetch<{ skill: Skill }>("/api/admin/skills", {
+        method: "POST",
+        body: JSON.stringify(newSkill),
+      });
+      setSkills([...skills, data.skill]);
+      setNewSkillName("");
+      notifyContentRefresh();
     } catch (err) {
       console.log("Supabase insert error:", err);
     }
-
-    setSkills([...skills, newSkill]);
-    setNewSkillName("");
   };
 
   const handleDeleteSkill = async (id: string) => {
     try {
-      await supabase.from("skills").delete().eq("id", id);
+      await adminFetch<null>(`/api/admin/skills/${id}`, { method: "DELETE" });
+      setSkills(skills.filter((s) => s.id !== id));
+      notifyContentRefresh();
     } catch (err) {
       console.log("Supabase delete error:", err);
     }
-
-    setSkills(skills.filter((s) => s.id !== id));
   };
 
   const categories = ["Frontend", "Backend", "Tools", "Soft Skills"];
@@ -66,7 +70,9 @@ export default function AdminSkillsPage() {
   return (
     <div className="flex flex-col gap-8 max-w-5xl">
       <div className="border-b border-mono-700 pb-4">
-        <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">// MANAGE SKILLS</span>
+        <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">
+          {"// MANAGE SKILLS"}
+        </span>
         <h1 className="font-archivo text-3xl font-black uppercase text-white tracking-tight mt-1">
           KELOLA KEAHLIAN &amp; STACK
         </h1>

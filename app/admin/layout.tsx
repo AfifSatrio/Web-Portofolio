@@ -3,7 +3,8 @@
 import React, { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
+import Image from "next/image";
+import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { LayoutDashboard, FolderKanban, Wrench, UserCheck, LogOut, Globe } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
@@ -14,7 +15,7 @@ const ADMIN_NAV = [
   { name: "ABOUT", href: "/admin/about", icon: UserCheck },
 ];
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const { user, isWhitelisted, loading, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -65,9 +66,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {/* User Info Card */}
           <div className="flex items-center gap-3 p-3 bg-black border border-mono-700 rounded-[4px]">
             {user.photoURL ? (
-              <img
+              <Image
                 src={user.photoURL}
                 alt={user.displayName || "Admin"}
+                width={32}
+                height={32}
+                unoptimized
                 className="w-8 h-8 rounded-full border border-mono-700 object-cover"
               />
             ) : (
@@ -130,5 +134,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main Admin Content Area */}
       <main className="flex-1 p-6 md:p-12 overflow-y-auto bg-black">{children}</main>
     </div>
+  );
+}
+
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <AuthProvider>
+      <AdminLayoutContent>{children}</AdminLayoutContent>
+    </AuthProvider>
   );
 }

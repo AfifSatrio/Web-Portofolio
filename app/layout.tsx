@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Archivo_Black } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/context/AuthContext";
 
 const archivoBlack = Archivo_Black({
   weight: "400",
@@ -21,9 +20,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={`${archivoBlack.variable}`}>
+    <html lang="id" className={`${archivoBlack.variable} scroll-smooth`}>
       <body className="bg-black text-white antialiased min-h-screen flex flex-col">
-        <AuthProvider>{children}</AuthProvider>
+        {children}
       </body>
     </html>
   );

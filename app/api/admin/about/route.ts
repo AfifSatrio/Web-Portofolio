@@ -1,0 +1,60 @@
+import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/admin-auth";
+import { createSupabaseAdminClient } from "@/lib/supabase-admin";
+import { DUMMY_ABOUT } from "@/lib/dummy-data";
+
+const normalizeAbout = (about: any) => ({
+  ...DUMMY_ABOUT,
+  ...about,
+  tagline: typeof about?.tagline === "string" && about.tagline.trim()
+    ? about.tagline.trim()
+    : DUMMY_ABOUT.tagline,
+  bio: typeof about?.bio === "string" && about.bio.trim()
+    ? about.bio.replace(/\r\n/g, "\n").split(/\n{2,}/).map((paragraph: string) => paragraph.trim()).filter(Boolean).join("\n\n")
+    : DUMMY_ABOUT.bio,
+  cv_url: typeof about?.cv_url === "string" && about.cv_url.trim()
+    ? about.cv_url.trim()
+    : DUMMY_ABOUT.cv_url,
+});
+
+export async function GET(request: NextRequest) {
+  const admin = await requireAdmin(request);
+  if ("error" in admin) return admin.error;
+  const supabaseAdmin = createSupabaseAdminClient();
+
+  try {
+    const { data, error } = await supabaseAdmin
+      .from("about_content")
+      .select("*")
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      console.warn("Supabase about_content table not ready yet, using fallback data:", error.message);
+      return NextResponse.json({ about: DUMMY_ABOUT });
+    }
+
+    return NextResponse.json({ about: normalizeAbout(data) });
+  } catch (err: any) {
+    return NextResponse.json({ about: DUMMY_ABOUT });
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  const admin = await requireAdmin(request);
+  if ("error" in admin) return admin.error;
+  const supabaseAdmin = createSupabaseAdminClient();
+
+  const payload = normalizeAbout(await request.json());
+  const { data, error } = await supabaseAdmin
+    .from("about_content")
+    .upsert([payload])
+    .select("*")
+    .single();
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 400 });
+  }
+
+  return NextResponse.json({ about: data });
+}

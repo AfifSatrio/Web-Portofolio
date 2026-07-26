@@ -8,7 +8,17 @@ import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { Save, CheckCircle2 } from "lucide-react";
 import { DUMMY_ABOUT } from "@/lib/dummy-data";
-import { supabase } from "@/lib/supabase";
+import { AboutContent } from "@/types";
+import { adminFetch } from "@/lib/admin-api";
+import { notifyContentRefresh } from "@/lib/content-refresh";
+
+const normalizeMultilineText = (value: string) =>
+  value
+    .replace(/\r\n/g, "\n")
+    .split(/\n{2,}/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean)
+    .join("\n\n");
 
 export default function AdminAboutPage() {
   const [formData, setFormData] = useState({
@@ -22,12 +32,12 @@ export default function AdminAboutPage() {
   useEffect(() => {
     async function loadAbout() {
       try {
-        const { data, error } = await supabase.from("about_content").select("*").limit(1).single();
-        if (!error && data) {
+        const { about } = await adminFetch<{ about: AboutContent | null }>("/api/admin/about");
+        if (about) {
           setFormData({
-            tagline: data.tagline || "",
-            bio: data.bio || "",
-            cv_url: data.cv_url || "",
+            tagline: about.tagline || "",
+            bio: about.bio || "",
+            cv_url: about.cv_url || "",
           });
         }
       } catch (err) {
@@ -42,28 +52,32 @@ export default function AdminAboutPage() {
     setIsSubmitting(true);
 
     try {
-      await supabase.from("about_content").upsert([
-        {
+      await adminFetch("/api/admin/about", {
+        method: "PUT",
+        body: JSON.stringify({
           id: DUMMY_ABOUT.id,
-          tagline: formData.tagline,
-          bio: formData.bio,
-          cv_url: formData.cv_url || null,
+          tagline: formData.tagline.trim(),
+          bio: normalizeMultilineText(formData.bio),
+          cv_url: formData.cv_url.trim() || null,
           updated_at: new Date().toISOString(),
-        },
-      ]);
+        }),
+      });
+      notifyContentRefresh();
+      setSuccessMessage(true);
+      setTimeout(() => setSuccessMessage(false), 3000);
     } catch (err) {
       console.log("Supabase about update error:", err);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setIsSubmitting(false);
-    setSuccessMessage(true);
-    setTimeout(() => setSuccessMessage(false), 3000);
   };
 
   return (
     <div className="flex flex-col gap-8 max-w-3xl">
       <div className="border-b border-mono-700 pb-4">
-        <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">// EDIT PROFILE</span>
+        <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">
+          {"// EDIT PROFILE"}
+        </span>
         <h1 className="font-archivo text-3xl font-black uppercase text-white tracking-tight mt-1">
           KELOLA ABOUT &amp; BIO
         </h1>
