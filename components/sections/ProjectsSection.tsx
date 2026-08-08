@@ -64,7 +64,7 @@ export const ProjectsSection = () => {
           <ScrollReveal variant="fade-up" delay={150}>
             <div className="w-full py-16 px-6 border border-mono-800 rounded-[12px] bg-mono-900/50 flex flex-col items-center justify-center text-center gap-3">
               <p className="font-archivo text-xl sm:text-2xl font-bold text-mono-300">
-                I haven't uploaded my portfolio here yet :(
+                {"I haven't uploaded my portfolio here yet :("}
               </p>
               <p className="font-sans text-xs text-mono-500">
                 Check back soon for new projects and updates!
