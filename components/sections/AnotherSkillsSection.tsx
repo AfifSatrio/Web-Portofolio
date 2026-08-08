@@ -11,6 +11,8 @@ const ANOTHER_SKILLS_DATA: SkillItemData[] = [
   { id: "gaming", name: "Gaming", score: 90 },
 ];
 
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
+
 export const AnotherSkillsSection = () => {
   return (
     <section
@@ -19,19 +21,21 @@ export const AnotherSkillsSection = () => {
     >
       <div className="max-w-container mx-auto flex flex-col gap-10 items-center">
         {/* Header */}
-        <div className="flex flex-col gap-3 items-center text-center">
-          <span className="text-xs uppercase tracking-widest text-mono-500 font-sans font-semibold">
-            {"// PERSONAL ABILITIES"}
-          </span>
-          <h2 className="font-archivo text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-white">
-            ANOTHER SKILLS
-          </h2>
-        </div>
+        <ScrollReveal variant="fade-up">
+          <div className="flex flex-col gap-3 items-center text-center">
+            <span className="text-xs uppercase tracking-widest text-mono-500 font-sans font-semibold">
+              {"// PERSONAL ABILITIES"}
+            </span>
+            <h2 className="font-archivo text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-white">
+              MY SKILLS
+            </h2>
+          </div>
+        </ScrollReveal>
 
         {/* Vertical Bar Chart Container */}
-        <div className="w-full max-w-4xl">
+        <ScrollReveal variant="fade-up" delay={150} className="w-full max-w-4xl">
           <VerticalBarChart skills={ANOTHER_SKILLS_DATA} />
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );

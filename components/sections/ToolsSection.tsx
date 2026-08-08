@@ -16,6 +16,8 @@ const TOOLS_LIST: ToolItem[] = [
   { id: "vercel", name: "Vercel", type: "vercel" },
 ];
 
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
+
 export const ToolsSection = () => {
   return (
     <section
@@ -24,19 +26,23 @@ export const ToolsSection = () => {
     >
       <div className="max-w-container mx-auto flex flex-col gap-10 items-center">
         {/* Header */}
-        <div className="flex flex-col gap-2 items-center text-center">
-          <span className="text-xs uppercase tracking-widest text-mono-500 font-sans font-semibold">
-            {"// TOOLS & ENVIRONMENT"}
-          </span>
-          <h3 className="font-archivo text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
-            TOOLS
-          </h3>
-        </div>
+        <ScrollReveal variant="fade-up">
+          <div className="flex flex-col gap-2 items-center text-center">
+            <span className="text-xs uppercase tracking-widest text-mono-500 font-sans font-semibold">
+              {"// TOOLS & ENVIRONMENT"}
+            </span>
+            <h3 className="font-archivo text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
+              MY TOOLS
+            </h3>
+          </div>
+        </ScrollReveal>
 
         {/* Tools Icon Grid */}
         <div className="grid grid-cols-5 sm:grid-cols-5 md:grid-cols-10 gap-4 sm:gap-6 w-full max-w-5xl justify-center">
-          {TOOLS_LIST.map((tool) => (
-            <ToolCard key={tool.id} tool={tool} />
+          {TOOLS_LIST.map((tool, idx) => (
+            <ScrollReveal key={tool.id} variant="zoom-in" delay={idx * 45}>
+              <ToolCard tool={tool} />
+            </ScrollReveal>
           ))}
         </div>
       </div>

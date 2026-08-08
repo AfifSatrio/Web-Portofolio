@@ -12,21 +12,20 @@ interface AboutGalleryProps {
 
 export const AboutGallery = ({ images }: AboutGalleryProps) => {
   return (
-    <div className="w-full pt-6">
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+    <div className="w-full">
+      <div className="grid grid-cols-5 gap-2 sm:gap-4 md:gap-6">
         {images.map((img, index) => (
           <div
             key={index}
-            className="relative aspect-[3/4] w-full rounded-[8px] overflow-hidden transition-all duration-500 group shadow-lg cursor-pointer"
+            className="relative aspect-[3/4] w-full rounded-[8px] sm:rounded-[12px] overflow-hidden transition-all duration-500 group shadow-xl cursor-pointer"
           >
             <Image
               src={img.src}
               alt={img.alt}
               fill
-              sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
-              className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 ease-in-out"
+              sizes="(max-width: 768px) 20vw, 20vw"
+              className="object-cover md:grayscale md:group-hover:grayscale-0 md:group-hover:scale-110 transition-all duration-500 ease-in-out"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3 pointer-events-none" />
           </div>
         ))}
       </div>

@@ -58,17 +58,18 @@ export const SkillDonutChart = ({
   activeCategory,
   onHoverCategory,
 }: SkillDonutChartProps) => {
-  const cx = 250;
+  const cx = 300;
   const cy = 210;
-  const rOuter = 115;
-  const rInner = 70;
+  const rOuter = 110;
+  const rInner = 65;
 
   return (
     <div className="lg:col-span-7 flex flex-col items-center justify-center relative w-full">
-      <div className="relative w-full max-w-[540px] aspect-[500/420]">
+      <div className="relative w-full max-w-[600px] aspect-[600/420]">
         <svg
-          viewBox="0 0 500 420"
-          className="w-full h-full drop-shadow-2xl overflow-visible"
+          viewBox="0 0 600 420"
+          className="w-full h-full drop-shadow-2xl"
+          preserveAspectRatio="xMidYMid meet"
         >
           <defs>
             {categories.map((cat) => (
@@ -144,43 +145,17 @@ export const SkillDonutChart = ({
             const isActive = activeCategory === cat.id;
             const toRad = (deg: number) => (deg * Math.PI) / 180;
             const midRad = toRad(cat.midAngle);
+            const isRightSide = Math.cos(midRad) >= 0;
 
             const xStart = cx + (rOuter + 8) * Math.cos(midRad);
             const yStart = cy + (rOuter + 8) * Math.sin(midRad);
-
-            let xKnee = xStart;
-            let yKnee = yStart;
-            let xEnd = xStart;
-            let yEnd = yStart;
-            let labelX = xEnd;
-            let labelY = yEnd;
-            let textAnchor: "start" | "end" | "middle" = "start";
-
-            if (cat.id === "frontend") {
-              xKnee = cx + rOuter + 45;
-              yKnee = yStart;
-              xEnd = xKnee + 50;
-              yEnd = yKnee;
-              labelX = xEnd + 8;
-              labelY = yEnd + 4;
-              textAnchor = "start";
-            } else if (cat.id === "uiux") {
-              xKnee = cx - rOuter - 20;
-              yKnee = cy + rOuter + 30;
-              xEnd = xKnee - 40;
-              yEnd = yKnee;
-              labelX = xEnd - 8;
-              labelY = yEnd + 4;
-              textAnchor = "end";
-            } else if (cat.id === "backend") {
-              xKnee = cx - rOuter - 25;
-              yKnee = cy - rOuter - 15;
-              xEnd = xKnee - 40;
-              yEnd = yKnee;
-              labelX = xEnd - 8;
-              labelY = yEnd + 4;
-              textAnchor = "end";
-            }
+            const xKnee = cx + (isRightSide ? rOuter + 40 : -(rOuter + 40));
+            const yKnee = yStart;
+            const xEnd = xKnee + (isRightSide ? 30 : -30);
+            const yEnd = yKnee;
+            const labelX = xEnd + (isRightSide ? 6 : -6);
+            const labelY = yEnd + 4;
+            const textAnchor: "start" | "end" = isRightSide ? "start" : "end";
 
             return (
               <g
@@ -217,7 +192,8 @@ export const SkillDonutChart = ({
                   y={labelY}
                   textAnchor={textAnchor}
                   fill={isActive ? "#FFFFFF" : cat.color}
-                  className={`text-xs font-archivo font-bold uppercase tracking-wider transition-all duration-300 ${isActive ? "text-sm" : ""
+                  fontSize="11"
+                  className={`font-archivo font-bold uppercase tracking-wider transition-all duration-300 ${isActive ? "text-sm" : ""
                     }`}
                 >
                   {cat.name} ({cat.percentage}%)
@@ -230,3 +206,4 @@ export const SkillDonutChart = ({
     </div>
   );
 };
+

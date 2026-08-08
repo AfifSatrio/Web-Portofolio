@@ -1,24 +1,20 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
-import { LayoutDashboard, FolderKanban, Wrench, UserCheck, LogOut, Globe } from "lucide-react";
+import { LogOut, Globe, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
-const ADMIN_NAV = [
-  { name: "DASHBOARD", href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "PROJECTS", href: "/admin/projects", icon: FolderKanban },
-  { name: "SKILLS", href: "/admin/skills", icon: Wrench },
-  { name: "ABOUT", href: "/admin/about", icon: UserCheck },
-];
+import { ADMIN_NAV_LINKS as ADMIN_NAV } from "@/constants";
 
 function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const { user, isWhitelisted, loading, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const isLoginPage = pathname === "/admin/login";
 
@@ -29,6 +25,11 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
       }
     }
   }, [user, isWhitelisted, loading, isLoginPage, router]);
+
+  // Close sidebar on route change
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
 
   if (isLoginPage) {
     return <>{children}</>;
@@ -47,11 +48,47 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col md:flex-row font-sans">
+      {/* Mobile Top Bar */}
+      <div className="md:hidden flex items-center justify-between p-4 bg-mono-900 border-b border-mono-700 sticky top-0 z-40">
+        <Link
+          href="/"
+          className="font-archivo text-lg font-black uppercase text-white tracking-tight hover:opacity-80 transition-opacity"
+        >
+          PORTFOLIO<span className="text-mono-500">.</span>
+        </Link>
+
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="p-2 text-mono-300 hover:text-white transition-colors"
+          aria-label="Toggle menu"
+        >
+          {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
+      </div>
+
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black/60 z-30 backdrop-blur-sm"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar Navigation */}
-      <aside className="w-full md:w-64 bg-mono-900 border-r border-mono-700 flex flex-col justify-between p-6 shrink-0">
+      <aside
+        className={`
+          fixed md:sticky top-0 left-0 z-40 h-full md:h-auto
+          w-[280px] md:w-64 bg-mono-900 border-r border-mono-700
+          flex flex-col justify-between p-6 shrink-0
+          transform transition-transform duration-300 ease-in-out
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          md:translate-x-0 md:transform-none
+          overflow-y-auto
+        `}
+      >
         <div className="flex flex-col gap-8">
-          {/* Logo / Title */}
-          <div className="flex flex-col gap-1 border-b border-mono-700 pb-4">
+          {/* Logo / Title — hidden on mobile (already in top bar) */}
+          <div className="hidden md:flex flex-col gap-1 border-b border-mono-700 pb-4">
             <Link
               href="/"
               className="font-archivo text-xl font-black uppercase text-white tracking-tight hover:opacity-80 transition-opacity"
@@ -61,6 +98,19 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
             <span className="text-[10px] uppercase font-mono text-mono-500 tracking-widest">
               [ ADMIN CONTROL PANEL ]
             </span>
+          </div>
+
+          {/* Close button on mobile sidebar */}
+          <div className="flex md:hidden items-center justify-between border-b border-mono-700 pb-4">
+            <span className="text-[10px] uppercase font-mono text-mono-500 tracking-widest">
+              [ ADMIN MENU ]
+            </span>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="p-1 text-mono-500 hover:text-white transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
 
           {/* User Info Card */}
@@ -132,7 +182,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Main Admin Content Area */}
-      <main className="flex-1 p-6 md:p-12 overflow-y-auto bg-black">{children}</main>
+      <main className="flex-1 p-4 md:p-12 overflow-y-auto bg-black min-w-0">{children}</main>
     </div>
   );
 }

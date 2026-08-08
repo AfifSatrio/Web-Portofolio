@@ -5,12 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 
-const NAV_LINKS = [
-  { name: "HOME", href: "/" },
-  { name: "ABOUT", href: "/about" },
-  { name: "PROJECTS", href: "/projects" },
-  { name: "CONTACT", href: "/contact" },
-];
+import { NAV_LINKS } from "@/constants";
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);

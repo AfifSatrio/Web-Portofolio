@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
+import { ImageUpload } from "@/components/ui/ImageUpload";
 import { ArrowLeft, Save } from "lucide-react";
 import { adminFetch } from "@/lib/admin-api";
 import { notifyContentRefresh } from "@/lib/content-refresh";
@@ -19,7 +20,6 @@ export default function NewProjectPage() {
     tech_stack: "",
     demo_url: "",
     repo_url: "",
-    display_order: "1",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -39,7 +39,6 @@ export default function NewProjectPage() {
       tech_stack: techArray,
       demo_url: formData.demo_url || null,
       repo_url: formData.repo_url || null,
-      display_order: parseInt(formData.display_order) || 1,
       created_at: new Date().toISOString(),
     };
 
@@ -58,7 +57,7 @@ export default function NewProjectPage() {
   };
 
   return (
-    <div className="flex flex-col gap-8 max-w-3xl">
+    <div className="flex flex-col gap-6 md:gap-8 max-w-3xl">
       <Link
         href="/admin/projects"
         className="inline-flex items-center gap-2 text-xs uppercase tracking-wider text-mono-500 hover:text-white transition-colors"
@@ -71,12 +70,12 @@ export default function NewProjectPage() {
         <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">
           {"// CREATE NEW"}
         </span>
-        <h1 className="font-archivo text-3xl font-black uppercase text-white tracking-tight mt-1">
+        <h1 className="font-archivo text-2xl md:text-3xl font-black uppercase text-white tracking-tight mt-1">
           TAMBAH PROYEK BARU
         </h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-mono-900 border border-mono-700 p-8 rounded-[6px] flex flex-col gap-6">
+      <form onSubmit={handleSubmit} className="bg-mono-900 border border-mono-700 p-4 md:p-8 rounded-[6px] flex flex-col gap-6">
         <Input
           label="Judul Proyek *"
           placeholder="e.g. E-Commerce Dashboard"
@@ -94,11 +93,10 @@ export default function NewProjectPage() {
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
         />
 
-        <Input
-          label="URL Thumbnail / Screenshot *"
-          placeholder="https://images.unsplash.com/..."
+        <ImageUpload
+          label="Thumbnail / Screenshot Proyek *"
           value={formData.thumbnail_url}
-          onChange={(e) => setFormData({ ...formData, thumbnail_url: e.target.value })}
+          onChange={(url) => setFormData({ ...formData, thumbnail_url: url })}
         />
 
         <Input
@@ -124,13 +122,6 @@ export default function NewProjectPage() {
             onChange={(e) => setFormData({ ...formData, repo_url: e.target.value })}
           />
         </div>
-
-        <Input
-          label="Urutan Tampil (Angka)"
-          type="number"
-          value={formData.display_order}
-          onChange={(e) => setFormData({ ...formData, display_order: e.target.value })}
-        />
 
         <Button
           type="submit"

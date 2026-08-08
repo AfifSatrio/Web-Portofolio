@@ -5,14 +5,13 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
-import { Plus, Trash2, Save } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { Skill } from "@/types";
-import { DUMMY_SKILLS } from "@/lib/dummy-data";
 import { adminFetch } from "@/lib/admin-api";
 import { notifyContentRefresh } from "@/lib/content-refresh";
 
 export default function AdminSkillsPage() {
-  const [skills, setSkills] = useState<Skill[]>(DUMMY_SKILLS);
+  const [skills, setSkills] = useState<Skill[]>([]);
   const [newSkillName, setNewSkillName] = useState("");
   const [newCategory, setNewCategory] = useState("Frontend");
 
@@ -35,8 +34,7 @@ export default function AdminSkillsPage() {
     e.preventDefault();
     if (!newSkillName.trim()) return;
 
-    const newSkill: Skill = {
-      id: "sk-" + Date.now(),
+    const newSkill = {
       name: newSkillName.trim(),
       category: newCategory,
       created_at: new Date().toISOString(),
@@ -65,7 +63,7 @@ export default function AdminSkillsPage() {
     }
   };
 
-  const categories = ["Frontend", "Backend", "Tools", "Soft Skills"];
+  const categories = ["Frontend", "Backend", "Tools"];
 
   return (
     <div className="flex flex-col gap-8 max-w-5xl">

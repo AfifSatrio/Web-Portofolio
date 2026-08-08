@@ -8,8 +8,8 @@ import Link from "next/link";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
+import { ImageUpload } from "@/components/ui/ImageUpload";
 import { ArrowLeft, Save } from "lucide-react";
-import { DUMMY_PROJECTS } from "@/lib/dummy-data";
 import { Project } from "@/types";
 import { adminFetch } from "@/lib/admin-api";
 import { notifyContentRefresh } from "@/lib/content-refresh";
@@ -26,7 +26,6 @@ export default function EditProjectPage() {
     tech_stack: "",
     demo_url: "",
     repo_url: "",
-    display_order: "1",
   });
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -46,7 +45,6 @@ export default function EditProjectPage() {
             tech_stack: (project.tech_stack || []).join(", "),
             demo_url: project.demo_url || "",
             repo_url: project.repo_url || "",
-            display_order: String(project.display_order || 1),
           });
           setLoading(false);
           return;
@@ -55,19 +53,7 @@ export default function EditProjectPage() {
         console.log("Supabase fetch failed, looking in dummy:", err);
       }
 
-      // Fallback search in dummy projects
-      const existing = DUMMY_PROJECTS.find((p) => p.id === projectId);
-      if (existing) {
-        setFormData({
-          title: existing.title,
-          description: existing.description,
-          thumbnail_url: existing.thumbnail_url,
-          tech_stack: existing.tech_stack.join(", "),
-          demo_url: existing.demo_url || "",
-          repo_url: existing.repo_url || "",
-          display_order: String(existing.display_order),
-        });
-      }
+      // No dummy projects fallback needed
       setLoading(false);
     }
 
@@ -90,7 +76,6 @@ export default function EditProjectPage() {
       tech_stack: techArray,
       demo_url: formData.demo_url || null,
       repo_url: formData.repo_url || null,
-      display_order: parseInt(formData.display_order) || 1,
     };
 
     try {
@@ -116,7 +101,7 @@ export default function EditProjectPage() {
   }
 
   return (
-    <div className="flex flex-col gap-8 max-w-3xl">
+    <div className="flex flex-col gap-6 md:gap-8 max-w-3xl">
       <Link
         href="/admin/projects"
         className="inline-flex items-center gap-2 text-xs uppercase tracking-wider text-mono-500 hover:text-white transition-colors"
@@ -129,12 +114,12 @@ export default function EditProjectPage() {
         <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">
           {"// EDIT ITEM"}
         </span>
-        <h1 className="font-archivo text-3xl font-black uppercase text-white tracking-tight mt-1">
+        <h1 className="font-archivo text-2xl md:text-3xl font-black uppercase text-white tracking-tight mt-1">
           EDIT PROYEK
         </h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-mono-900 border border-mono-700 p-8 rounded-[6px] flex flex-col gap-6">
+      <form onSubmit={handleSubmit} className="bg-mono-900 border border-mono-700 p-4 md:p-8 rounded-[6px] flex flex-col gap-6">
         <Input
           label="Judul Proyek *"
           required
@@ -150,10 +135,10 @@ export default function EditProjectPage() {
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
         />
 
-        <Input
-          label="URL Thumbnail / Screenshot *"
+        <ImageUpload
+          label="Thumbnail / Screenshot Proyek *"
           value={formData.thumbnail_url}
-          onChange={(e) => setFormData({ ...formData, thumbnail_url: e.target.value })}
+          onChange={(url) => setFormData({ ...formData, thumbnail_url: url })}
         />
 
         <Input
@@ -176,13 +161,6 @@ export default function EditProjectPage() {
             onChange={(e) => setFormData({ ...formData, repo_url: e.target.value })}
           />
         </div>
-
-        <Input
-          label="Urutan Tampil (Angka)"
-          type="number"
-          value={formData.display_order}
-          onChange={(e) => setFormData({ ...formData, display_order: e.target.value })}
-        />
 
         <Button
           type="submit"

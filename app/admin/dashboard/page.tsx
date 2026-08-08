@@ -7,12 +7,11 @@ import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { FolderKanban, Wrench, UserCheck, Plus, ExternalLink } from "lucide-react";
-import { DUMMY_PROJECTS, DUMMY_SKILLS } from "@/lib/dummy-data";
 import { adminFetch } from "@/lib/admin-api";
 
 export default function AdminDashboardPage() {
-  const [projectCount, setProjectCount] = useState<number>(DUMMY_PROJECTS.length);
-  const [skillCount, setSkillCount] = useState<number>(DUMMY_SKILLS.length);
+  const [projectCount, setProjectCount] = useState<number>(0);
+  const [skillCount, setSkillCount] = useState<number>(0);
 
   useEffect(() => {
     async function fetchCounts() {

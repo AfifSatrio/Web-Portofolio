@@ -6,7 +6,7 @@ export interface Project {
   tech_stack: string[];
   demo_url?: string | null;
   repo_url?: string | null;
-  display_order: number;
+  display_order?: number;
   created_at: string;
 }
 

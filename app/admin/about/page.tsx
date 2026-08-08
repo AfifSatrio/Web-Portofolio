@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { Save, CheckCircle2 } from "lucide-react";
-import { DUMMY_ABOUT } from "@/lib/dummy-data";
+import { EMPTY_ABOUT } from "@/lib/content-data";
 import { AboutContent } from "@/types";
 import { adminFetch } from "@/lib/admin-api";
 import { notifyContentRefresh } from "@/lib/content-refresh";
@@ -22,9 +22,9 @@ const normalizeMultilineText = (value: string) =>
 
 export default function AdminAboutPage() {
   const [formData, setFormData] = useState({
-    tagline: DUMMY_ABOUT.tagline,
-    bio: DUMMY_ABOUT.bio,
-    cv_url: DUMMY_ABOUT.cv_url || "",
+    tagline: EMPTY_ABOUT.tagline,
+    bio: EMPTY_ABOUT.bio,
+    cv_url: EMPTY_ABOUT.cv_url || "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState(false);
@@ -55,7 +55,7 @@ export default function AdminAboutPage() {
       await adminFetch("/api/admin/about", {
         method: "PUT",
         body: JSON.stringify({
-          id: DUMMY_ABOUT.id,
+          id: EMPTY_ABOUT.id || "00000000-0000-4000-8000-000000000001",
           tagline: formData.tagline.trim(),
           bio: normalizeMultilineText(formData.bio),
           cv_url: formData.cv_url.trim() || null,

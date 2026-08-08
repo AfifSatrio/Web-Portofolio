@@ -9,11 +9,7 @@ interface HeroSocialsProps {
   links?: SocialLink[];
 }
 
-const DEFAULT_SOCIALS: SocialLink[] = [
-  { label: "GITHUB", url: "https://github.com/afifsatrio" },
-  { label: "LINKEDIN", url: "https://www.linkedin.com/in/afifsatrio/" },
-  { label: "INSTAGRAM", url: "https://instagram.com/afifsatrio_" },
-];
+import { SOCIAL_LINKS as DEFAULT_SOCIALS } from "@/constants";
 
 export const HeroSocials = ({ links = DEFAULT_SOCIALS }: HeroSocialsProps) => {
   return (

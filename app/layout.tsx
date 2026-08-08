@@ -10,7 +10,7 @@ const archivoBlack = Archivo_Black({
 });
 
 export const metadata: Metadata = {
-  title: "Personal Portfolio | Developer",
+  title: "Afif Satrio | Personal Portfolio",
   description: "Minimalist monochrome developer portfolio showcasing technical projects, skills, and expertise.",
 };
 

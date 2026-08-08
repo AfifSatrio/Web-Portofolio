@@ -8,12 +8,11 @@ import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { Plus, Edit3, Trash2 } from "lucide-react";
 import { Project } from "@/types";
-import { DUMMY_PROJECTS } from "@/lib/dummy-data";
 import { adminFetch } from "@/lib/admin-api";
 import { notifyContentRefresh } from "@/lib/content-refresh";
 
 export default function AdminProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>(DUMMY_PROJECTS);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

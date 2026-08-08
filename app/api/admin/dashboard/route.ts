@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-auth";
 import { createSupabaseAdminClient } from "@/lib/supabase-admin";
-import { DUMMY_PROJECTS, DUMMY_SKILLS } from "@/lib/dummy-data";
 
 export async function GET(request: NextRequest) {
   const admin = await requireAdmin(request);
@@ -12,17 +11,17 @@ export async function GET(request: NextRequest) {
     const [{ count: projectCount, error: projectError }, { count: skillCount, error: skillError }] =
       await Promise.all([
         supabaseAdmin.from("projects").select("*", { count: "exact", head: true }),
-        supabaseAdmin.from("skills").select("*", { count: "exact", head: true }),
+        supabaseAdmin.from("skills").select("*", { count: "exact", head: true }).neq("category", "Soft Skills"),
       ]);
 
     return NextResponse.json({
-      projectCount: projectCount !== null && !projectError ? projectCount : DUMMY_PROJECTS.length,
-      skillCount: skillCount !== null && !skillError ? skillCount : DUMMY_SKILLS.length,
+      projectCount: projectCount !== null && !projectError ? projectCount : 0,
+      skillCount: skillCount !== null && !skillError ? skillCount : 0,
     });
   } catch (err: any) {
     return NextResponse.json({
-      projectCount: DUMMY_PROJECTS.length,
-      skillCount: DUMMY_SKILLS.length,
+      projectCount: 0,
+      skillCount: 0,
     });
   }
 }

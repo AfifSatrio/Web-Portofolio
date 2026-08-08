@@ -21,7 +21,7 @@ export const Footer = () => {
             About
           </Link>
           <Link href="/projects" className="hover:text-white transition-colors">
-            Projects
+            Portfolio
           </Link>
           <Link href="/contact" className="hover:text-white transition-colors">
             Contact
