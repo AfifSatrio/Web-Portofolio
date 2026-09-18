@@ -1,91 +1,77 @@
 "use client";
-
-import React, { useEffect, useRef, useState } from "react";
-
+import { useEffect, useRef, ReactNode } from "react";
 export type AnimationVariant =
-  | "fade-up"
-  | "fade-down"
-  | "fade-left"
-  | "fade-right"
-  | "zoom-in"
-  | "fade";
-
-interface ScrollRevealProps {
-  children: React.ReactNode;
+  "fade-up" | "fade-down" | "fade-left" | "fade-right" | "zoom-in" | "fade";
+interface Props {
+  children: ReactNode;
   variant?: AnimationVariant;
-  delay?: number; // delay in ms
-  duration?: number; // duration in ms
+  delay?: number;
+  duration?: number;
   className?: string;
   threshold?: number;
   once?: boolean;
 }
 
-export const ScrollReveal: React.FC<ScrollRevealProps> = ({
+export function ScrollReveal({
   children,
   variant = "fade-up",
   delay = 0,
-  duration = 800,
+  duration = 400,
   className = "",
   threshold = 0.12,
   once = true,
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
+}: Props) {
   const ref = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const element = ref.current;
-    if (!element) return;
-
+    if (!element || !("IntersectionObserver" in window) || !element.animate)
+      return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let animation: Animation | undefined;
+    const transforms = {
+      "fade-up": "translateY(12px)",
+      "fade-down": "translateY(-12px)",
+      "fade-left": "translateX(12px)",
+      "fade-right": "translateX(-12px)",
+      "zoom-in": "scale(0.98)",
+      fade: "none",
+    };
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setIsVisible(true);
+          if (!reduced.matches && !element.contains(document.activeElement)) {
+            animation?.cancel();
+            animation = element.animate(
+              [
+                { opacity: 0, transform: transforms[variant] },
+                { opacity: 1, transform: "none" },
+              ],
+              { duration, delay, easing: "ease-out", fill: "backwards" },
+            );
+          }
           if (once) observer.unobserve(element);
-        } else if (!once) {
-          setIsVisible(false);
         }
       },
-      { threshold }
+      { threshold },
     );
-
+    const onPreference = () => {
+      if (reduced.matches) animation?.cancel();
+    };
+    const onFocus = () => animation?.cancel();
+    element.addEventListener("focusin", onFocus);
+    reduced.addEventListener("change", onPreference);
     observer.observe(element);
-    return () => observer.disconnect();
-  }, [once, threshold]);
-
-  const getInitialTransform = () => {
-    switch (variant) {
-      case "fade-up":
-        return "translateY(36px)";
-      case "fade-down":
-        return "translateY(-36px)";
-      case "fade-left":
-        return "translateX(36px)";
-      case "fade-right":
-        return "translateX(-36px)";
-      case "zoom-in":
-        return "scale(0.92)";
-      case "fade":
-        return "none";
-      default:
-        return "translateY(36px)";
-    }
-  };
-
+    return () => {
+      element.removeEventListener("focusin", onFocus);
+      observer.disconnect();
+      animation?.cancel();
+      reduced.removeEventListener("change", onPreference);
+    };
+  }, [variant, delay, duration, threshold, once]);
+  // Content is visible before hydration and when JavaScript is unavailable.
   return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        opacity: isVisible ? 1 : 0,
-        transform: isVisible ? "none" : getInitialTransform(),
-        transitionProperty: "opacity, transform",
-        transitionDuration: `${duration}ms`,
-        transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-        transitionDelay: `${delay}ms`,
-        willChange: "opacity, transform",
-      }}
-    >
+    <div ref={ref} className={className}>
       {children}
     </div>
   );
-};
+}

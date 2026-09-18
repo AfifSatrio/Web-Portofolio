@@ -1,54 +1,51 @@
 "use client";
-
-import React, { useEffect, useState } from "react";
-import { InteractiveBackground } from "@/components/ui/InteractiveBackground";
-import { EMPTY_ABOUT } from "@/lib/content-data";
+import { useEffect, useState } from "react";
+import { PROFILE_ABOUT } from "@/lib/profile-content";
 import { fetchPortfolioContent } from "@/lib/public-content-api";
 import { subscribeToContentRefresh } from "@/lib/content-refresh";
-import { HeroHeadline } from "@/components/hero/HeroHeadline";
 import { HeroActions } from "@/components/hero/HeroActions";
 import { HeroSocials } from "@/components/hero/HeroSocials";
 
-import { ScrollReveal } from "@/components/ui/ScrollReveal";
-
-export const HeroSection = () => {
-  const [tagline, setTagline] = useState<string>(EMPTY_ABOUT.tagline);
-
+export function HeroSection() {
+  const [tagline, setTagline] = useState(PROFILE_ABOUT.tagline);
   useEffect(() => {
-    const loadTagline = () => fetchPortfolioContent().then((data) => {
-      if (data?.about.tagline) setTagline(data.about.tagline);
-    });
-
-    loadTagline();
-    const unsubscribe = subscribeToContentRefresh(loadTagline);
-
+    let active = true;
+    const refresh = async () => {
+      const content = await fetchPortfolioContent();
+      if (active && content) setTagline(content.about.tagline);
+    };
+    refresh();
+    const unsubscribe = subscribeToContentRefresh(refresh);
     return () => {
+      active = false;
       unsubscribe();
     };
   }, []);
-
   return (
-    <section
-      id="hero"
-      className="relative h-screen pt-20 pb-12 px-6 md:px-16 flex flex-col justify-center items-center text-center overflow-hidden border-b border-mono-700 bg-black group"
-    >
-      <InteractiveBackground />
-
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1A1A1A_1px,transparent_1px),linear-gradient(to_bottom,#1A1A1A_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30 pointer-events-none z-0" />
-
-      <div className="max-w-container mx-auto z-10 flex flex-col items-center gap-8 relative pointer-events-none">
-        <ScrollReveal variant="fade-up" delay={100} className="flex flex-col items-center gap-4">
-          <HeroHeadline tagline={tagline} />
-        </ScrollReveal>
-
-        <ScrollReveal variant="fade-up" delay={250}>
+    <section className="relative min-h-[85svh] pt-36 pb-20 flex items-center overflow-hidden border-b border-line-subtle">
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-[linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_55%_65%_at_50%_50%,#000_10%,transparent_100%)] opacity-30 pointer-events-none"
+      />
+      <div className="content-container relative flex flex-col items-center text-center">
+        <p className="eyebrow mb-6">Web development for your business</p>
+        <h1 className="font-archivo text-[clamp(2.75rem,9vw,7rem)] uppercase tracking-tight leading-none">
+          Afif Satrio
+        </h1>
+        <p className="mt-6 max-w-2xl text-lg sm:text-xl leading-relaxed text-ink-secondary">
+          {tagline}
+        </p>
+        <p className="mt-4 max-w-xl body-copy">
+          I build business websites and custom web applications, from responsive
+          interfaces to back-end functionality.
+        </p>
+        <div className="mt-8">
           <HeroActions />
-        </ScrollReveal>
-
-        <ScrollReveal variant="fade-up" delay={400}>
+        </div>
+        <div className="mt-8">
           <HeroSocials />
-        </ScrollReveal>
+        </div>
       </div>
     </section>
   );
-};
+}

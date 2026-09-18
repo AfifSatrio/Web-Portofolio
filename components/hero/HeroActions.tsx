@@ -1,23 +1,18 @@
-import React from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
-import { ArrowDownRight } from "lucide-react";
-
-export const HeroActions = () => {
+import { buttonStyles } from "@/components/ui/Button";
+import { ArrowUpRight } from "lucide-react";
+export function HeroActions() {
   return (
-    <div className="pointer-events-auto flex flex-col sm:flex-row items-center gap-4 sm:gap-6 mt-1">
-      <Link href="/projects">
-        <Button size="lg" variant="primary" className="w-full sm:w-auto">
-          <span>See My Projects</span>
-          <ArrowDownRight className="w-5 h-5" />
-        </Button>
+    <div className="flex flex-col sm:flex-row items-stretch gap-3 w-full sm:w-auto">
+      <Link href="/projects" className={buttonStyles({ size: "lg" })}>
+        See my projects <ArrowUpRight size={18} aria-hidden="true" />
       </Link>
-
-      <Link href="/contact">
-        <Button size="lg" variant="outline" className="w-full sm:w-auto">
-          <span>Contact Me</span>
-        </Button>
+      <Link
+        href="/contact"
+        className={buttonStyles({ size: "lg", variant: "outline" })}
+      >
+        Discuss a project
       </Link>
     </div>
   );
-};
+}

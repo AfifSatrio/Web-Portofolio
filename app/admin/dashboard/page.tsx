@@ -101,8 +101,8 @@ export default function AdminDashboardPage() {
         </Card>
       </div>
 
-      <div className="p-6 bg-mono-900 border border-mono-700 rounded-[6px] flex flex-col gap-3">
-        <h3 className="font-archivo text-lg font-bold uppercase text-white">
+      <div className="p-6 bg-mono-900 border border-mono-700 rounded-card flex flex-col gap-3">
+        <h3 className="font-sans text-lg font-semibold text-ink">
           {"// PETUNJUK PENGGUNAAN ADMIN"}
         </h3>
         <ul className="text-xs text-mono-500 space-y-2 font-sans list-disc list-inside">

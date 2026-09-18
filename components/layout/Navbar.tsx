@@ -1,115 +1,135 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ArrowUpRight } from "lucide-react";
+import { CONTACT_HREF } from "@/lib/profile-content";
 
-import { NAV_LINKS } from "@/constants";
+const links = [
+  { name: "Work", href: "/#projects" },
+  { name: "About", href: "/#about" },
+  { name: "Contact", href: "/#contact" },
+];
 
-export const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+export function Navbar() {
   const pathname = usePathname();
-
+  const [isOpen, setIsOpen] = useState(false);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  useEffect(() => setIsOpen(false), [pathname]);
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 40) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Lock body scroll when overlay menu is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
+    const element = dialog.current;
+    const triggerElement = trigger.current;
+    if (!element) return;
+    if (!isOpen) {
+      if (element.open) element.close();
+      return;
     }
+    element.showModal();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const media = window.matchMedia("(min-width: 768px)");
+    const closeOnDesktop = () => {
+      if (media.matches) setIsOpen(false);
+    };
+    media.addEventListener("change", closeOnDesktop);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      media.removeEventListener("change", closeOnDesktop);
+      if (element.open) element.close();
+      triggerElement?.focus();
+    };
   }, [isOpen]);
-
-  const toggleMenu = () => setIsOpen(!isOpen);
-
   return (
     <>
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-            ? "bg-black/90 backdrop-blur-md border-b border-mono-700 py-8"
-            : "bg-transparent py-8"
-          }`}
-      >
-        <div className="max-w-container mx-auto px-6 md:px-16 flex items-center justify-between">
-          <Link
-            href="/"
-            className="font-archivo text-xl md:text-2xl font-black uppercase tracking-tighter text-white hover:opacity-80 transition-opacity"
-          >
-            AFIFSATRIO.DEV<span className="text-mono-500">.</span>
+      <header className="sg-header">
+        <div className="sg-container sg-nav">
+          <Link href="/" aria-label="Afif Satrio home" className="sg-brand">
+            afif satrio
+            <span className="brand-period">.</span>
           </Link>
-
-          {/* Icon-Only Hamburger Menu Button */}
+          <nav aria-label="Main navigation" className="sg-desktop-nav">
+            {links.map((link) => (
+              <Link key={link.name} href={link.href}>
+                {link.name}
+              </Link>
+            ))}
+          </nav>
+          <a className="nav-contact" href={CONTACT_HREF}>
+            Let’s talk <ArrowUpRight size={16} aria-hidden="true" />
+          </a>
           <button
-            onClick={toggleMenu}
-            aria-label="Toggle Navigation Menu"
-            className="p-2.5 text-white hover:text-mono-400 active:scale-90 transition-all duration-200 group focus:outline-none"
+            ref={trigger}
+            type="button"
+            onClick={() => setIsOpen(true)}
+            aria-label="Open navigation menu"
+            aria-expanded={isOpen}
+            aria-controls="mobile-navigation"
+            className="sg-menu-button"
           >
-            {isOpen ? (
-              <X className="w-7 h-7 transition-transform duration-200 group-hover:rotate-90" />
-            ) : (
-              <Menu className="w-7 h-7" />
-            )}
+            <Menu size={23} aria-hidden="true" />
           </button>
         </div>
       </header>
-
-      {/* Full-Screen Overlay Menu */}
-      <div
-        className={`fixed inset-0 z-40 bg-black text-white flex flex-col justify-between px-6 pt-24 pb-10 md:px-24 md:pt-28 md:pb-14 transition-all duration-500 ease-in-out ${isOpen
-            ? "opacity-100 pointer-events-auto translate-y-0"
-            : "opacity-0 pointer-events-none -translate-y-full"
-          }`}
+      <dialog
+        ref={dialog}
+        id="mobile-navigation"
+        aria-labelledby="mobile-navigation-title"
+        onCancel={() => setIsOpen(false)}
+        onClose={() => setIsOpen(false)}
+        className="sg-mobile-dialog"
+        onKeyDown={(event) => {
+          if (event.key !== "Tab") return;
+          const controls = event.currentTarget.querySelectorAll<HTMLElement>(
+            "a[href], button:not(:disabled)",
+          );
+          const first = controls[0],
+            last = controls[controls.length - 1];
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last?.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first?.focus();
+          }
+        }}
       >
-        {/* Background Accent Grid / Overlay */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1A1A1A_1px,transparent_1px),linear-gradient(to_bottom,#1A1A1A_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30 pointer-events-none" />
-
-        {/* Main Navigation Links */}
-        <nav className="max-w-container mx-auto w-full flex flex-col gap-6 md:gap-8 z-10">
-          <span className="text-mono-500 font-sans text-xs uppercase tracking-widest border-b border-mono-700 pb-2 max-w-xs">
-            {"// NAVIGATION MENU"}
-          </span>
-          {NAV_LINKS.map((link, idx) => {
-            const isActive = pathname === link.href;
-            return (
-              <Link
-                key={link.name}
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                className="group flex items-baseline gap-4 md:gap-8 transition-transform duration-300 hover:translate-x-4"
-              >
-                <span className="font-sans text-xs md:text-sm text-mono-500 font-semibold">
-                  0{idx + 1}
-                </span>
-                <span
-                  className={`font-archivo text-4xl sm:text-6xl md:text-8xl font-black uppercase tracking-tight transition-colors ${isActive ? "text-white underline underline-offset-8" : "text-mono-500 hover:text-white"
-                    }`}
-                >
-                  {link.name}
-                </span>
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Overlay Footer Info */}
-        <div className="max-w-container mx-auto w-full flex flex-col sm:flex-row justify-between items-start sm:items-center border-t border-mono-700 pt-6 gap-4 text-xs text-mono-500 font-sans z-10">
-          <p>© {new Date().getFullYear()} ALL RIGHTS RESERVED.</p>
+        <div className="mobile-menu-top">
+          <h2 id="mobile-navigation-title" className="sg-eyebrow">
+            Explore
+          </h2>
+          <button
+            type="button"
+            onClick={() => setIsOpen(false)}
+            className="sg-menu-close"
+            aria-label="Close navigation menu"
+          >
+            <X size={24} />
+          </button>
         </div>
-      </div>
+        <nav aria-label="Mobile navigation">
+          {links.map((link, index) => (
+            <Link
+              href={link.href}
+              key={link.name}
+              onClick={() => setIsOpen(false)}
+            >
+              <span>0{index + 1}</span>
+              {link.name}
+              <ArrowUpRight size={23} aria-hidden="true" />
+            </Link>
+          ))}
+        </nav>
+        <a
+          href={CONTACT_HREF}
+          onClick={() => setIsOpen(false)}
+          className="sg-button"
+        >
+          Let’s talk <ArrowUpRight size={18} aria-hidden="true" />
+        </a>
+        <p className="mobile-menu-caption">Independent web development.</p>
+      </dialog>
     </>
   );
-};
+}

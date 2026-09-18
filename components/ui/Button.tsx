@@ -7,36 +7,49 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
 }
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "primary", size = "md", children, ...props }, ref) => {
-    const baseStyles =
-      "inline-flex items-center justify-center font-sans font-semibold tracking-wide transition-all duration-200 ease-out focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed select-none rounded-[4px]";
-
-    const variants = {
+export const buttonStyles = ({
+  variant = "primary",
+  size = "md",
+  className = "",
+}: {
+  variant?: "primary" | "outline" | "ghost";
+  size?: "sm" | "md" | "lg";
+  className?: string;
+} = {}) =>
+  cn(
+    "inline-flex min-h-11 items-center justify-center gap-2 rounded-control border font-sans font-semibold transition-colors duration-ui focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-4 disabled:opacity-50 disabled:cursor-not-allowed",
+    {
       primary:
-        "bg-white text-black border-2 border-white hover:bg-black hover:text-white active:scale-[0.98]",
+        "bg-white text-black border-white hover:bg-mono-200 hover:border-mono-200 active:bg-mono-300",
       outline:
-        "bg-transparent text-white border-2 border-white hover:bg-white hover:text-black active:scale-[0.98]",
+        "bg-transparent text-ink border-line-strong hover:border-white hover:bg-mono-900 active:bg-mono-800",
       ghost:
-        "bg-transparent text-mono-500 hover:text-white hover:bg-mono-900 border border-transparent",
-    };
+        "bg-transparent text-ink-secondary border-transparent hover:text-white hover:bg-mono-900 active:bg-mono-800",
+    }[variant],
+    {
+      sm: "px-4 py-2 text-sm",
+      md: "px-5 py-3 text-sm",
+      lg: "px-6 py-3.5 text-base",
+    }[size],
+    className,
+  );
 
-    const sizes = {
-      sm: "text-xs px-3 py-1.5 gap-1.5",
-      md: "text-sm px-5 py-2.5 gap-2",
-      lg: "text-base px-7 py-3.5 gap-2.5 uppercase tracking-wider",
-    };
-
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    { className, variant = "primary", size = "md", children, ...props },
+    ref,
+  ) => {
     return (
       <button
         ref={ref}
-        className={cn(baseStyles, variants[variant], sizes[size], className)}
+        type="button"
+        className={buttonStyles({ variant, size, className })}
         {...props}
       >
         {children}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = "Button";

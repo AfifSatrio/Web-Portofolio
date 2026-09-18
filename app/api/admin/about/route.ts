@@ -1,21 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-auth";
 import { createSupabaseAdminClient } from "@/lib/supabase-admin";
-import { EMPTY_ABOUT } from "@/lib/content-data";
-
-const normalizeAbout = (about: any) => ({
-  ...EMPTY_ABOUT,
-  ...about,
-  tagline: typeof about?.tagline === "string" && about.tagline.trim()
-    ? about.tagline.trim()
-    : EMPTY_ABOUT.tagline,
-  bio: typeof about?.bio === "string" && about.bio.trim()
-    ? about.bio.replace(/\r\n/g, "\n").split(/\n{2,}/).map((paragraph: string) => paragraph.trim()).filter(Boolean).join("\n\n")
-    : EMPTY_ABOUT.bio,
-  cv_url: typeof about?.cv_url === "string" && about.cv_url.trim()
-    ? about.cv_url.trim()
-    : EMPTY_ABOUT.cv_url,
-});
+import {
+  PROFILE_ABOUT as EMPTY_ABOUT,
+  normalizeAbout,
+} from "@/lib/profile-content";
 
 export async function GET(request: NextRequest) {
   const admin = await requireAdmin(request);
@@ -30,7 +19,10 @@ export async function GET(request: NextRequest) {
       .maybeSingle();
 
     if (error) {
-      console.warn("Supabase about_content table not ready yet, using fallback data:", error.message);
+      console.warn(
+        "Supabase about_content table not ready yet, using fallback data:",
+        error.message,
+      );
       return NextResponse.json({ about: EMPTY_ABOUT });
     }
 

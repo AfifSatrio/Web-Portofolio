@@ -124,7 +124,7 @@ export function ImageUpload({ label, value, onChange, className }: ImageUploadPr
 
       {preview ? (
         /* Preview State */
-        <div className="relative group rounded-[4px] border border-mono-700 overflow-hidden bg-mono-900">
+        <div className="relative group rounded-control border border-mono-700 overflow-hidden bg-mono-900">
           <div className="relative w-full aspect-video">
             <Image
               src={preview}
@@ -149,14 +149,14 @@ export function ImageUpload({ label, value, onChange, className }: ImageUploadPr
               <button
                 type="button"
                 onClick={() => inputRef.current?.click()}
-                className="px-4 py-2 bg-white text-black text-xs font-semibold uppercase tracking-wider rounded-[4px] hover:bg-mono-200 transition-colors"
+                className="px-4 py-2 bg-white text-black text-xs font-semibold uppercase tracking-wider rounded-control hover:bg-mono-200 transition-colors"
               >
                 GANTI
               </button>
               <button
                 type="button"
                 onClick={handleRemove}
-                className="p-2 bg-mono-700 text-white rounded-[4px] hover:bg-mono-600 transition-colors"
+                className="p-2 bg-mono-700 text-white rounded-control hover:bg-mono-600 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -171,7 +171,7 @@ export function ImageUpload({ label, value, onChange, className }: ImageUploadPr
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           className={cn(
-            "relative w-full aspect-video rounded-[4px] border-2 border-dashed transition-colors cursor-pointer flex flex-col items-center justify-center gap-3",
+            "relative w-full aspect-video rounded-control border-2 border-dashed transition-colors cursor-pointer flex flex-col items-center justify-center gap-3",
             isDragging
               ? "border-white bg-mono-800"
               : "border-mono-700 bg-mono-900 hover:border-mono-500 hover:bg-mono-800/50"

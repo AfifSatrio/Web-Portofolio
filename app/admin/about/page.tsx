@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { Save, CheckCircle2 } from "lucide-react";
-import { EMPTY_ABOUT } from "@/lib/content-data";
+import { PROFILE_ABOUT as EMPTY_ABOUT } from "@/lib/profile-content";
 import { AboutContent } from "@/types";
 import { adminFetch } from "@/lib/admin-api";
 import { notifyContentRefresh } from "@/lib/content-refresh";
@@ -84,13 +84,13 @@ export default function AdminAboutPage() {
       </div>
 
       {successMessage && (
-        <div className="p-4 bg-mono-900 border border-white rounded-[4px] flex items-center gap-3 text-xs text-white">
+        <div className="p-4 bg-mono-900 border border-white rounded-control flex items-center gap-3 text-xs text-white">
           <CheckCircle2 className="w-5 h-5 text-white shrink-0" />
           <span>Konten Bio &amp; Tagline berhasil diperbarui!</span>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-mono-900 border border-mono-700 p-8 rounded-[6px] flex flex-col gap-6">
+      <form onSubmit={handleSubmit} className="bg-mono-900 border border-mono-700 p-8 rounded-card flex flex-col gap-6">
         <Input
           label="Tagline Singkat (Hero Section) *"
           placeholder="Frontend Developer | Passionate about Clean UI"

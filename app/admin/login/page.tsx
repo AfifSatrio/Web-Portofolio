@@ -52,7 +52,7 @@ export default function AdminLoginPage() {
       </div>
 
       {/* Login Form Container */}
-      <div className="max-w-md w-full mx-auto bg-mono-900 border border-mono-700 p-8 md:p-10 rounded-[8px] z-10 flex flex-col gap-6 shadow-2xl">
+      <div className="max-w-md w-full mx-auto bg-mono-900 border border-mono-700 p-8 md:p-10 rounded-card z-10 flex flex-col gap-6 shadow-2xl">
         <div className="flex flex-col gap-2 text-center">
           <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">
             {"// PRIVATE ACCESS ONLY"}
@@ -66,7 +66,7 @@ export default function AdminLoginPage() {
         </div>
 
         {authError && (
-          <div className="p-4 bg-mono-700/50 border border-white/20 rounded-[4px] flex items-start gap-3 text-xs text-mono-300">
+          <div className="p-4 bg-mono-700/50 border border-white/20 rounded-control flex items-start gap-3 text-xs text-mono-300">
             <ShieldAlert className="w-5 h-5 text-white shrink-0 mt-0.5" />
             <p className="leading-relaxed">{authError}</p>
           </div>

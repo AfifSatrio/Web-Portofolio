@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Archivo_Black } from "next/font/google";
 import "./globals.css";
+import "./stargazer.css";
+import "./portfolio.css";
 
 const archivoBlack = Archivo_Black({
   weight: "400",
@@ -10,8 +12,12 @@ const archivoBlack = Archivo_Black({
 });
 
 export const metadata: Metadata = {
-  title: "Afif Satrio | Personal Portfolio",
-  description: "Minimalist monochrome developer portfolio showcasing technical projects, skills, and expertise.",
+  title: {
+    default: "Afif Satrio | Full Stack Web Developer",
+    template: "%s | Afif Satrio",
+  },
+  description:
+    "Business websites and custom web applications by Afif Satrio. Full stack web development with Next.js, Laravel, and Tailwind CSS.",
 };
 
 export default function RootLayout({
@@ -20,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={`${archivoBlack.variable} scroll-smooth`}>
+    <html lang="en" className={`${archivoBlack.variable} scroll-smooth`}>
       <body className="bg-black text-white antialiased min-h-screen flex flex-col">
         {children}
       </body>

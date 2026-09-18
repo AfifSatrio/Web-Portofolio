@@ -51,7 +51,7 @@ export default function HeroScene() {
 
   if (!isMounted) {
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center bg-mono-900 border border-mono-700 rounded-[8px] p-8 gap-3">
+      <div className="w-full h-full flex flex-col items-center justify-center bg-mono-900 border border-mono-700 rounded-card p-8 gap-3">
         <Monitor className="w-12 h-12 text-mono-500 animate-pulse" />
         <span className="text-xs uppercase font-mono tracking-widest text-mono-500">
           MEMUAT HERO 3D SCENE...
@@ -64,7 +64,7 @@ export default function HeroScene() {
     <div className="w-full aspect-[16/10] sm:aspect-[16/9] max-w-4xl relative cursor-grab active:cursor-grabbing">
       <Suspense
         fallback={
-          <div className="w-full h-full flex flex-col items-center justify-center bg-mono-900 border border-mono-700 rounded-[8px] p-8 gap-3">
+          <div className="w-full h-full flex flex-col items-center justify-center bg-mono-900 border border-mono-700 rounded-card p-8 gap-3">
             <Monitor className="w-12 h-12 text-mono-500 animate-pulse" />
             <span className="text-xs uppercase font-mono tracking-widest text-mono-500">
               MEMUAT RENDER 3D...

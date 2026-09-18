@@ -1,94 +1,102 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { FolderOpen, RefreshCw } from "lucide-react";
 import { fetchPortfolioContent } from "@/lib/public-content-api";
 import { subscribeToContentRefresh } from "@/lib/content-refresh";
 import { Project } from "@/types";
 import { ProjectCard } from "@/components/projects/ProjectCard";
-import { ProjectPagination } from "@/components/projects/ProjectPagination";
+import { ProjectSkeleton } from "@/components/projects/ProjectSkeleton";
+import { Button } from "@/components/ui/Button";
 
-const ITEMS_PER_PAGE = 2;
-
-import { ScrollReveal } from "@/components/ui/ScrollReveal";
-
-export const ProjectsSection = () => {
+export function ProjectsSection() {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-
-  useEffect(() => {
-    const loadProjects = () => fetchPortfolioContent().then((data) => {
-      if (data?.projects && Array.isArray(data.projects)) {
-        setProjects(data.projects);
-        setCurrentPage(1);
-      } else {
-        setProjects([]);
-      }
-    });
-
-    loadProjects();
-    const unsubscribe = subscribeToContentRefresh(loadProjects);
-
-    return () => {
-      unsubscribe();
-    };
+  const [status, setStatus] = useState<"loading" | "ready" | "error">(
+    "loading",
+  );
+  const request = useRef<AbortController | null>(null);
+  const loadProjects = useCallback(async () => {
+    request.current?.abort();
+    const controller = new AbortController();
+    request.current = controller;
+    setStatus("loading");
+    const data = await fetchPortfolioContent(controller.signal);
+    if (controller.signal.aborted) return;
+    if (data && Array.isArray(data.projects)) {
+      setProjects(data.projects);
+      setStatus("ready");
+    } else {
+      setStatus("error");
+    }
   }, []);
 
-  const totalPages = Math.ceil(projects.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentProjects = projects.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  useEffect(() => {
+    loadProjects();
+    const unsubscribe = subscribeToContentRefresh(loadProjects);
+    return () => {
+      request.current?.abort();
+      unsubscribe();
+    };
+  }, [loadProjects]);
 
-  const handlePageChange = (newPage: number) => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      setCurrentPage(newPage);
-    }
-  };
-
+  const showSkeleton = status === "loading" && projects.length === 0;
   return (
-    <section
-      id="projects"
-      className="py-24 px-6 md:px-16 bg-black text-white"
-    >
-      <div className="max-w-container mx-auto flex flex-col gap-12">
-        <ScrollReveal variant="fade-up">
-          <div className="flex flex-col gap-4">
-            <span className="text-xs uppercase tracking-widest text-mono-500 font-sans font-semibold">
-              {"// FEATURED WORKS"}
-            </span>
-            <h2 className="font-archivo text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-white">
-              MY PROJECTS
-            </h2>
-          </div>
-        </ScrollReveal>
-
-        {projects.length === 0 ? (
-          <ScrollReveal variant="fade-up" delay={150}>
-            <div className="w-full py-16 px-6 border border-mono-800 rounded-[12px] bg-mono-900/50 flex flex-col items-center justify-center text-center gap-3">
-              <p className="font-archivo text-xl sm:text-2xl font-bold text-mono-300">
-                {"I haven't uploaded my portfolio here yet :("}
-              </p>
-              <p className="font-sans text-xs text-mono-500">
-                Check back soon for new projects and updates!
-              </p>
-            </div>
-          </ScrollReveal>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {currentProjects.map((project, idx) => (
-                <ScrollReveal key={project.id} variant="fade-up" delay={150 + idx * 120}>
-                  <ProjectCard project={project} />
-                </ScrollReveal>
-              ))}
-            </div>
-
-            <ProjectPagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
-          </>
-        )}
+    <section className="content-container" aria-labelledby="projects-title">
+      <div className="mb-10 max-w-2xl">
+        <p className="eyebrow mb-4">Selected work</p>
+        <h1 id="projects-title" className="page-title">
+          My projects.
+        </h1>
+        <p className="body-copy mt-5">
+          A selection of business websites and web applications. Explore the
+          projects, their features, and the technologies behind them.
+        </p>
       </div>
+      <p role="status" className="sr-only">
+        {status === "loading"
+          ? "Loading projects…"
+          : status === "ready"
+            ? `${projects.length} projects loaded.`
+            : "Projects could not be refreshed."}
+      </p>
+      {status === "error" && (
+        <div role="alert" className="surface-panel p-6 sm:p-8 mb-6">
+          <h2 className="card-title">Unable to load projects</h2>
+          <p className="body-copy mt-3">
+            Please check your connection and try again.
+            {projects.length > 0
+              ? " Your previously loaded projects are shown below."
+              : ""}
+          </p>
+          <Button onClick={loadProjects} variant="outline" className="mt-5">
+            <RefreshCw size={16} aria-hidden="true" /> Try again
+          </Button>
+        </div>
+      )}
+      <div
+        aria-busy={status === "loading"}
+        aria-label="Project list"
+        className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 items-stretch"
+      >
+        {showSkeleton
+          ? Array.from({ length: 3 }, (_, i) => <ProjectSkeleton key={i} />)
+          : projects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
+      </div>
+      {status === "ready" && projects.length === 0 && (
+        <div className="surface-panel p-10 sm:p-16 text-center">
+          <FolderOpen
+            size={32}
+            className="mx-auto mb-5 text-ink-secondary"
+            aria-hidden="true"
+          />
+          <h2 className="card-title">New work is on the way</h2>
+          <p className="body-copy mt-3">
+            There are no published projects to show yet. Please check back soon.
+          </p>
+        </div>
+      )}
     </section>
   );
-};
+}

@@ -75,7 +75,7 @@ export default function NewProjectPage() {
         </h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-mono-900 border border-mono-700 p-4 md:p-8 rounded-[6px] flex flex-col gap-6">
+      <form onSubmit={handleSubmit} className="bg-mono-900 border border-mono-700 p-4 md:p-8 rounded-card flex flex-col gap-6">
         <Input
           label="Judul Proyek *"
           placeholder="e.g. E-Commerce Dashboard"

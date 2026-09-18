@@ -1,66 +1,54 @@
-import React from "react";
-import { Instagram, Phone, Linkedin, Github } from "lucide-react";
-
-export const ContactInfo = () => {
+import { ArrowUpRight } from "lucide-react";
+import { CONTACT_EMAIL, CONTACT_HREF, UPWORK_URL } from "@/lib/profile-content";
+export function ContactInfo() {
   return (
-    <div className="lg:col-span-5 flex flex-col gap-8">
-      <div className="flex flex-col gap-4">
-        <span className="text-xs uppercase tracking-widest text-mono-500 font-sans font-semibold">
-          {"// GET IN TOUCH"}
-        </span>
-        <h2 className="font-archivo text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-white leading-tight">
-          LET&apos;S WORK TOGETHER
-        </h2>
-        <p className="font-sans text-mono-500 text-base leading-relaxed">
-          Interested in collaborating, have questions about projects, or just want to say hi? Feel free to send a message through the form or social media channels below.
-        </p>
-      </div>
-
-      <div className="flex flex-col gap-4 pt-4 border-t border-mono-700">
-        <a
-          href="https://www.instagram.com/afifsatrio_/"
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center gap-4 text-mono-300 hover:text-white transition-colors group"
-        >
-          <div className="p-3 bg-mono-900 border border-mono-700 rounded-[4px] group-hover:border-white transition-colors">
-            <Instagram className="w-5 h-5 text-white" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xs text-mono-500 uppercase font-sans">Instagram</span>
-            <span className="font-sans text-sm font-semibold">@afifsatrio_</span>
-          </div>
-        </a>
-        <a
-          href="https://www.linkedin.com/in/afifsatrio/"
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center gap-4 text-mono-300 hover:text-white transition-colors group"
-        >
-          <div className="p-3 bg-mono-900 border border-mono-700 rounded-[4px] group-hover:border-white transition-colors">
-            <Linkedin className="w-5 h-5 text-white" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xs text-mono-500 uppercase font-sans">LinkedIn</span>
-            <span className="font-sans text-sm font-semibold">linkedin.com/in/afifsatrio</span>
-          </div>
-        </a>
-
-        <a
-          href="https://github.com/afifsatrio"
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center gap-4 text-mono-300 hover:text-white transition-colors group"
-        >
-          <div className="p-3 bg-mono-900 border border-mono-700 rounded-[4px] group-hover:border-white transition-colors">
-            <Github className="w-5 h-5 text-white" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xs text-mono-500 uppercase font-sans">GitHub</span>
-            <span className="font-sans text-sm font-semibold">github.com/afifsatrio</span>
-          </div>
-        </a>
+    <div>
+      <p className="eyebrow mb-4">Let’s talk</p>
+      <h1 className="page-title">
+        Your next
+        <br />
+        website starts here.
+      </h1>
+      <p className="body-copy mt-6 max-w-md">
+        Share your website requirements, and we can discuss the features, scope,
+        and next steps for your project.
+      </p>
+      <div className="mt-8 border-t border-line">
+        {[
+          { name: "Email", detail: CONTACT_EMAIL, href: CONTACT_HREF },
+          {
+            name: "Upwork",
+            detail: "View my freelance profile",
+            href: UPWORK_URL,
+          },
+          {
+            name: "LinkedIn",
+            detail: "Connect professionally",
+            href: "https://www.linkedin.com/in/afifsatrio/",
+          },
+          {
+            name: "GitHub",
+            detail: "Explore my code",
+            href: "https://github.com/afifsatrio",
+          },
+        ].map((link) => (
+          <a
+            key={link.name}
+            href={link.href}
+            target={link.name === "Email" ? undefined : "_blank"}
+            rel="noreferrer"
+            className="flex justify-between items-center gap-4 py-5 border-b border-line group"
+          >
+            <div>
+              <span className="font-semibold group-hover:underline underline-offset-4">
+                {link.name}
+              </span>
+              <p className="text-sm text-ink-secondary mt-1">{link.detail}</p>
+            </div>
+            <ArrowUpRight size={20} aria-hidden="true" />
+          </a>
+        ))}
       </div>
     </div>
   );
-};
+}

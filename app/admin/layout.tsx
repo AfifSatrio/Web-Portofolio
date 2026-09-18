@@ -114,7 +114,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
           </div>
 
           {/* User Info Card */}
-          <div className="flex items-center gap-3 p-3 bg-black border border-mono-700 rounded-[4px]">
+          <div className="flex items-center gap-3 p-3 bg-black border border-mono-700 rounded-control">
             {user.photoURL ? (
               <Image
                 src={user.photoURL}
@@ -146,7 +146,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-[4px] text-xs font-semibold uppercase tracking-wider transition-colors ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-control text-xs font-semibold uppercase tracking-wider transition-colors ${
                     isActive
                       ? "bg-white text-black font-bold"
                       : "text-mono-300 hover:text-white hover:bg-mono-700/50"

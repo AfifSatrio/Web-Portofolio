@@ -10,6 +10,8 @@ import { Skill } from "@/types";
 import { adminFetch } from "@/lib/admin-api";
 import { notifyContentRefresh } from "@/lib/content-refresh";
 
+import { SKILL_CATEGORIES } from "@/lib/profile-content";
+
 export default function AdminSkillsPage() {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [newSkillName, setNewSkillName] = useState("");
@@ -22,9 +24,7 @@ export default function AdminSkillsPage() {
   const fetchSkills = async () => {
     try {
       const data = await adminFetch<{ skills: Skill[] }>("/api/admin/skills");
-      if (data.skills.length > 0) {
-        setSkills(data.skills);
-      }
+      setSkills(data.skills);
     } catch (err) {
       console.log("Using local skills fallback:", err);
     }
@@ -63,7 +63,7 @@ export default function AdminSkillsPage() {
     }
   };
 
-  const categories = ["Frontend", "Backend", "Tools"];
+  const categories = SKILL_CATEGORIES;
 
   return (
     <div className="flex flex-col gap-8 max-w-5xl">
@@ -77,7 +77,10 @@ export default function AdminSkillsPage() {
       </div>
 
       {/* Add Skill Form */}
-      <form onSubmit={handleAddSkill} className="bg-mono-900 border border-mono-700 p-6 rounded-[6px] flex flex-col md:flex-row gap-4 items-end">
+      <form
+        onSubmit={handleAddSkill}
+        className="bg-mono-900 border border-mono-700 p-6 rounded-card flex flex-col md:flex-row gap-4 items-end"
+      >
         <div className="flex-1 w-full">
           <Input
             label="Nama Skill / Framework *"
@@ -89,13 +92,17 @@ export default function AdminSkillsPage() {
         </div>
 
         <div className="w-full md:w-48">
-          <label className="text-xs font-semibold uppercase tracking-wider text-mono-300 block mb-2">
+          <label
+            htmlFor="skill-category"
+            className="text-sm font-medium text-ink block mb-2"
+          >
             Kategori *
           </label>
           <select
+            id="skill-category"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
-            className="w-full bg-mono-900 border border-mono-700 text-white rounded-[4px] px-4 py-3 text-sm focus:outline-none focus:border-white"
+            className="w-full bg-mono-900 border border-mono-700 text-white rounded-control px-4 py-3 text-base focus:border-white"
           >
             {categories.map((cat) => (
               <option key={cat} value={cat}>
@@ -105,7 +112,12 @@ export default function AdminSkillsPage() {
           </select>
         </div>
 
-        <Button type="submit" variant="primary" size="md" className="w-full md:w-auto gap-2 shrink-0">
+        <Button
+          type="submit"
+          variant="primary"
+          size="md"
+          className="w-full md:w-auto gap-2 shrink-0"
+        >
           <Plus className="w-4 h-4" />
           <span>TAMBAH SKILL</span>
         </Button>
@@ -116,19 +128,31 @@ export default function AdminSkillsPage() {
         {categories.map((cat) => {
           const catSkills = skills.filter((s) => s.category === cat);
           return (
-            <Card key={cat} hoverEffect={false} className="p-6 flex flex-col gap-4">
+            <Card
+              key={cat}
+              hoverEffect={false}
+              className="p-6 flex flex-col gap-4"
+            >
               <div className="flex items-center justify-between border-b border-mono-700 pb-3">
-                <h3 className="font-archivo text-lg font-bold uppercase text-white">{cat}</h3>
-                <span className="text-xs text-mono-500 font-mono">0{catSkills.length}</span>
+                <h3 className="font-sans text-lg font-semibold text-ink">
+                  {cat}
+                </h3>
+                <span className="text-xs text-mono-500 font-mono">
+                  0{catSkills.length}
+                </span>
               </div>
 
               <div className="flex flex-wrap gap-2">
                 {catSkills.map((skill) => (
-                  <div key={skill.id} className="group inline-flex items-center gap-1.5 bg-black border border-mono-700 rounded-full px-3 py-1.5 text-xs text-mono-300 hover:border-white">
+                  <div
+                    key={skill.id}
+                    className="group inline-flex items-center gap-1.5 bg-black border border-mono-700 rounded-full px-3 py-1.5 text-xs text-mono-300 hover:border-white"
+                  >
                     <span>{skill.name}</span>
                     <button
                       onClick={() => handleDeleteSkill(skill.id)}
                       className="text-mono-500 hover:text-white transition-colors"
+                      aria-label={`Hapus ${skill.name}`}
                       title="Hapus skill"
                     >
                       <Trash2 className="w-3 h-3" />

@@ -13,18 +13,18 @@ interface AboutGalleryProps {
 export const AboutGallery = ({ images }: AboutGalleryProps) => {
   return (
     <div className="w-full">
-      <div className="grid grid-cols-5 gap-2 sm:gap-4 md:gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4">
         {images.map((img, index) => (
           <div
             key={index}
-            className="relative aspect-[3/4] w-full rounded-[8px] sm:rounded-[12px] overflow-hidden transition-all duration-500 group shadow-xl cursor-pointer"
+            className="relative aspect-square sm:aspect-[3/4] w-full rounded-card overflow-hidden last:col-span-2 last:aspect-[2/1] sm:last:col-span-1 sm:last:aspect-[3/4]"
           >
             <Image
               src={img.src}
               alt={img.alt}
               fill
-              sizes="(max-width: 768px) 20vw, 20vw"
-              className="object-cover md:grayscale md:group-hover:grayscale-0 md:group-hover:scale-110 transition-all duration-500 ease-in-out"
+              sizes="(max-width: 640px) 50vw, 20vw"
+              className="object-cover"
             />
           </div>
         ))}

@@ -81,10 +81,10 @@ export default function AdminProjectsPage() {
                   width={96}
                   height={64}
                   unoptimized
-                  className="w-24 h-16 object-cover border border-mono-700 rounded-[4px] bg-mono-900 shrink-0"
+                  className="w-24 h-16 object-cover border border-mono-700 rounded-control bg-mono-900 shrink-0"
                 />
                 <div className="flex flex-col gap-2">
-                  <h3 className="font-archivo text-xl font-bold uppercase text-white">
+                  <h3 className="font-sans text-xl font-semibold text-ink">
                     {project.title}
                   </h3>
                   <p className="text-xs text-mono-500 line-clamp-1 max-w-xl">

@@ -1,139 +1,148 @@
-import React, { useState } from "react";
+"use client";
+import { useRef, useState } from "react";
+import { Copy, Check, ArrowUpRight } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
-import { Send, CheckCircle2 } from "lucide-react";
+import { CONTACT_EMAIL, CONTACT_HREF } from "@/lib/profile-content";
 
-export const ContactForm = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
-  const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
+export function ContactForm() {
+  const [data, setData] = useState({ name: "", email: "", message: "" });
+  const [errors, setErrors] = useState<Partial<typeof data>>({});
+  const [draftOpened, setDraftOpened] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [copyError, setCopyError] = useState(false);
+  const form = useRef<HTMLFormElement>(null);
+  const brief = `Name: ${data.name.trim()}\nEmail: ${data.email.trim()}\n\nProject details:\n${data.message.trim()}`;
+  const emailDraft = `${CONTACT_HREF}?subject=${encodeURIComponent("Let’s discuss a website project")}&body=${encodeURIComponent(brief)}`;
+  const update = (key: keyof typeof data, value: string) => {
+    setData((previous) => ({ ...previous, [key]: value }));
+    setErrors((previous) => ({ ...previous, [key]: undefined }));
+    setCopied(false);
+    setCopyError(false);
+    setDraftOpened(false);
+  };
   const validate = () => {
-    const errs: { name?: string; email?: string; message?: string } = {};
-    if (!formData.name.trim()) errs.name = "Name is Required";
-    if (!formData.email.trim()) {
-      errs.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errs.email = "Invalid email format";
+    const next: Partial<typeof data> = {};
+    if (!data.name.trim()) next.name = "Please enter your name.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim()))
+      next.email = "Please enter a valid email address.";
+    if (!data.message.trim()) next.message = "Please describe your project.";
+    setErrors(next);
+    if (Object.keys(next).length) {
+      requestAnimationFrame(() =>
+        form.current
+          ?.querySelector<HTMLElement>('[aria-invalid="true"]')
+          ?.focus(),
+      );
+      return false;
     }
-    if (!formData.message.trim()) errs.message = "Message is Empty";
-    return errs;
+    return true;
   };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const validationErrors = validate();
-    setErrors(validationErrors);
-
-    if (Object.keys(validationErrors).length === 0) {
-      setIsSubmitting(true);
-      setTimeout(() => {
-        setIsSubmitting(false);
-        setIsSubmitted(true);
-        setFormData({ name: "", email: "", message: "" });
-      }, 1000);
+  const handleDraft = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!validate()) return;
+    setDraftOpened(true);
+    window.location.href = emailDraft;
+  };
+  const handleCopy = async () => {
+    if (!validate()) return;
+    try {
+      await navigator.clipboard.writeText(brief);
+      setCopied(true);
+      setCopyError(false);
+    } catch {
+      setCopyError(true);
+      setCopied(false);
     }
   };
-
   return (
-    <div className="lg:col-span-7 bg-mono-900 border border-mono-700 p-8 sm:p-10 rounded-[8px]">
-      {isSubmitted ? (
-        <div className="flex flex-col items-center justify-center text-center py-12 gap-4">
-          <CheckCircle2 className="w-16 h-16 text-white animate-bounce" />
-          <h3 className="font-archivo text-2xl font-bold uppercase text-white">
-            Message Sent Successfully!
-          </h3>
-          <p className="font-sans text-mono-400 text-sm max-w-md">
-            Thank you for contacting me. Your message has been received and will be responded to as soon as possible.
-          </p>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsSubmitted(false)}
-            className="mt-4"
-          >
-            Send Another Message
-          </Button>
+    <div className="surface-panel p-6 sm:p-8">
+      <h2 className="card-title">Prepare your project brief</h2>
+      <p className="body-copy mt-3 mb-6">
+        Tell me what you have in mind. We’ll open a draft in your email app for
+        you to review and send.
+      </p>
+      <form ref={form} onSubmit={handleDraft} noValidate className="space-y-5">
+        <Input
+          id="name"
+          label="Your name"
+          autoComplete="name"
+          required
+          value={data.name}
+          error={errors.name}
+          onChange={(e) => update("name", e.target.value)}
+          placeholder="Your name"
+        />
+        <Input
+          id="email"
+          label="Email address"
+          type="email"
+          autoComplete="email"
+          required
+          value={data.email}
+          error={errors.email}
+          onChange={(e) => update("email", e.target.value)}
+          placeholder="you@company.com"
+        />
+        <Textarea
+          id="message"
+          label="Project details"
+          rows={5}
+          required
+          value={data.message}
+          error={errors.message}
+          onChange={(e) => update("message", e.target.value)}
+          placeholder="What are you building? Include key features, your timeline, and any existing website or designs."
+        />
+        <Button type="submit" className="w-full">
+          Open email draft <ArrowUpRight size={18} aria-hidden="true" />
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={handleCopy}
+          className="w-full"
+        >
+          {copied ? (
+            <Check size={18} aria-hidden="true" />
+          ) : (
+            <Copy size={18} aria-hidden="true" />
+          )}
+          {copied ? "Brief copied" : "Copy project brief"}
+        </Button>
+        <div role="status" className="text-sm text-ink-secondary">
+          {copied
+            ? "Copied. You can paste your brief into any email app."
+            : draftOpened
+              ? "Your draft is ready to open in your email app. Review it and press send there. If no app opened, copy your brief and email me directly."
+              : "This form prepares a draft. Nothing is sent until you send it from your email app."}
         </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6" noValidate>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="name" className="text-xs font-mono uppercase tracking-wider text-mono-300">
-              Name <span className="text-white">*</span>
-            </label>
-            <Input
-              id="name"
-              type="text"
-              placeholder="Enter your name"
-              value={formData.name}
-              onChange={(e) => {
-                setFormData({ ...formData, name: e.target.value });
-                if (errors.name) setErrors({ ...errors, name: undefined });
-              }}
-              className={errors.name ? "border-red-500 focus:border-red-500" : ""}
-            />
-            {errors.name && (
-              <span className="text-xs font-sans text-red-400">{errors.name}</span>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label htmlFor="email" className="text-xs font-mono uppercase tracking-wider text-mono-300">
-              Email Address <span className="text-white">*</span>
-            </label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Enter your email"
-              value={formData.email}
-              onChange={(e) => {
-                setFormData({ ...formData, email: e.target.value });
-                if (errors.email) setErrors({ ...errors, email: undefined });
-              }}
-              className={errors.email ? "border-red-500 focus:border-red-500" : ""}
-            />
-            {errors.email && (
-              <span className="text-xs font-sans text-red-400">{errors.email}</span>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label htmlFor="message" className="text-xs font-mono uppercase tracking-wider text-mono-300">
-              Message <span className="text-white">*</span>
-            </label>
+        {copyError && (
+          <div role="alert">
+            <p className="text-sm text-feedback-error mb-3">
+              Automatic copying isn’t available. Select and copy the brief
+              below.
+            </p>
             <Textarea
-              id="message"
-              rows={5}
-              placeholder="Write your message here..."
-              value={formData.message}
-              onChange={(e) => {
-                setFormData({ ...formData, message: e.target.value });
-                if (errors.message) setErrors({ ...errors, message: undefined });
-              }}
-              className={errors.message ? "border-red-500 focus:border-red-500" : ""}
+              label="Your brief"
+              value={brief}
+              readOnly
+              rows={6}
+              onFocus={(e) => e.currentTarget.select()}
             />
-            {errors.message && (
-              <span className="text-xs font-sans text-red-400">{errors.message}</span>
-            )}
           </div>
-
-          <Button
-            type="submit"
-            variant="primary"
-            size="lg"
-            disabled={isSubmitting}
-            className="w-full gap-2 mt-2"
+        )}
+        <p className="text-sm text-ink-secondary">
+          Prefer a blank email?{" "}
+          <a
+            href={CONTACT_HREF}
+            className="underline underline-offset-4 break-all"
           >
-            <span>{isSubmitting ? "SENDING MESSAGE..." : "SEND MESSAGE"}</span>
-          </Button>
-        </form>
-      )}
+            {CONTACT_EMAIL}
+          </a>
+        </p>
+      </form>
     </div>
   );
-};
+}
