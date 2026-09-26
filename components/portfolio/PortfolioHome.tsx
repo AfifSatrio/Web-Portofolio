@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, ArrowDown } from "lucide-react";
+import { ArrowUpRight, ArrowDown, Mail } from "lucide-react";
 import type { AboutContent, Project } from "@/types";
-import { CONTACT_EMAIL, CONTACT_HREF, TECH_STACK } from "@/lib/profile-content";
+import { CONTACT_EMAIL, CONTACT_HREF } from "@/lib/profile-content";
 import { SOCIAL_LINKS } from "@/constants";
 import { fetchPortfolioContent } from "@/lib/public-content-api";
 import { subscribeToContentRefresh } from "@/lib/content-refresh";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { StackedSection } from "@/components/ui/StackedSection";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 
 const filters = ["All", "Websites", "Applications"] as const;
@@ -63,11 +64,12 @@ export function PortfolioHome({
     setRetrying(false);
   };
   return (
-    <>
-      <section
+    <div className="section-stack">
+      <StackedSection
         id="about"
-        className="content-container home-hero"
-        aria-labelledby="hero-title"
+        className="home-hero"
+        labelledBy="hero-title"
+        index={0}
       >
         <ScrollReveal className="hero-intro">
           <p className="eyebrow">01 / About — Afif Satrio</p>
@@ -89,26 +91,37 @@ export function PortfolioHome({
             </span>
           </a>
         </ScrollReveal>
-        <ScrollReveal delay={220} className="hero-stack">
-          <h2 className="eyebrow">My everyday stack</h2>
-          <ul className="stack-list" aria-label="Frequently used technologies">
-            {TECH_STACK.map((tech) => (
-              <motion.li
-                key={tech}
-                whileHover={reduced ? undefined : { y: -3 }}
-                transition={{ duration: 0.2 }}
-              >
-                {tech}
-              </motion.li>
+        <ScrollReveal delay={220} className="hero-socials">
+          <p className="eyebrow">Find me online</p>
+          <ul className="profile-social-links" aria-label="Social profiles and email">
+            {[
+              ...SOCIAL_LINKS,
+              { label: "Email", url: CONTACT_HREF, icon: Mail },
+            ].map(({ label, url, icon: Icon }) => (
+              <li key={label}>
+                <motion.a
+                  href={url}
+                  aria-label={label}
+                  title={label}
+                  target={label === "Email" ? undefined : "_blank"}
+                  rel={label === "Email" ? undefined : "noopener noreferrer"}
+                  whileHover={reduced ? undefined : { y: -3 }}
+                  whileTap={reduced ? undefined : { scale: 0.96 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Icon size={21} strokeWidth={1.5} aria-hidden="true" />
+                </motion.a>
+              </li>
             ))}
           </ul>
         </ScrollReveal>
-      </section>
+      </StackedSection>
 
-      <section
+      <StackedSection
         id="projects"
-        className="content-container home-section"
-        aria-labelledby="work-title"
+        className="home-section"
+        labelledBy="work-title"
+        index={1}
       >
         <ScrollReveal className="section-heading">
           <div>
@@ -183,12 +196,14 @@ export function PortfolioHome({
             )}
           </motion.div>
         )}
-      </section>
+      </StackedSection>
 
-      <section
+      <StackedSection
         id="contact"
-        className="content-container home-contact"
-        aria-labelledby="contact-title"
+        className="home-contact"
+        labelledBy="contact-title"
+        index={2}
+        last
       >
         <ScrollReveal>
           <p className="eyebrow">03 / Contact</p>
@@ -225,7 +240,7 @@ export function PortfolioHome({
             ))}
           </ul>
         </ScrollReveal>
-      </section>
-    </>
+      </StackedSection>
+    </div>
   );
 }

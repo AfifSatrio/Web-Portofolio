@@ -3,15 +3,6 @@ import type { AboutContent, Skill } from "@/types";
 export const CONTACT_EMAIL = "afifsatria2108@gmail.com";
 export const CONTACT_HREF = `mailto:${CONTACT_EMAIL}`;
 
-export const TECH_STACK = [
-  "Next.js",
-  "Laravel",
-  "Tailwind CSS",
-  "MySQL",
-  "Figma",
-  "GitHub",
-];
-
 // Profile copy supplied by Afif from his Upwork profile.
 // The introduction and skill records remain editable through the existing admin.
 export const SKILL_CATEGORIES = [

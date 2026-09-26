@@ -1,4 +1,13 @@
-import { LayoutDashboard, FolderKanban, Wrench, UserCheck } from "lucide-react";
+import {
+  LayoutDashboard,
+  FolderKanban,
+  Wrench,
+  UserCheck,
+  Github,
+  Linkedin,
+  Instagram,
+  type LucideIcon,
+} from "lucide-react";
 
 // Admin Sidebar Links
 export const ADMIN_NAV_LINKS = [
@@ -12,10 +21,11 @@ export const ADMIN_NAV_LINKS = [
 interface SocialLink {
   label: string;
   url: string;
+  icon: LucideIcon;
 }
 
 export const SOCIAL_LINKS: SocialLink[] = [
-  { label: "GitHub", url: "https://github.com/afifsatrio" },
-  { label: "LinkedIn", url: "https://www.linkedin.com/in/afifsatrio/" },
-  { label: "Instagram", url: "https://instagram.com/afifsatrio_" },
+  { label: "GitHub", url: "https://github.com/afifsatrio", icon: Github },
+  { label: "LinkedIn", url: "https://www.linkedin.com/in/afifsatrio/", icon: Linkedin },
+  { label: "Instagram", url: "https://instagram.com/afifsatrio_", icon: Instagram },
 ];
