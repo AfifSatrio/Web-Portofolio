@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { LogOut, Globe, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -52,7 +51,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
       <div className="md:hidden flex items-center justify-between p-4 bg-mono-900 border-b border-mono-700 sticky top-0 z-40">
         <Link
           href="/"
-          className="font-archivo text-lg font-black uppercase text-white tracking-tight hover:opacity-80 transition-opacity"
+          className="font-sans text-lg font-black uppercase text-white tracking-tight hover:opacity-80 transition-opacity"
         >
           PORTFOLIO<span className="text-mono-500">.</span>
         </Link>
@@ -62,7 +61,11 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
           className="p-2 text-mono-300 hover:text-white transition-colors"
           aria-label="Toggle menu"
         >
-          {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          {sidebarOpen ? (
+            <X className="w-5 h-5" />
+          ) : (
+            <Menu className="w-5 h-5" />
+          )}
         </button>
       </div>
 
@@ -91,7 +94,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
           <div className="hidden md:flex flex-col gap-1 border-b border-mono-700 pb-4">
             <Link
               href="/"
-              className="font-archivo text-xl font-black uppercase text-white tracking-tight hover:opacity-80 transition-opacity"
+              className="font-sans text-xl font-black uppercase text-white tracking-tight hover:opacity-80 transition-opacity"
             >
               PORTFOLIO<span className="text-mono-500">.</span>
             </Link>
@@ -115,25 +118,16 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
 
           {/* User Info Card */}
           <div className="flex items-center gap-3 p-3 bg-black border border-mono-700 rounded-control">
-            {user.photoURL ? (
-              <Image
-                src={user.photoURL}
-                alt={user.displayName || "Admin"}
-                width={32}
-                height={32}
-                unoptimized
-                className="w-8 h-8 rounded-full border border-mono-700 object-cover"
-              />
-            ) : (
-              <div className="w-8 h-8 rounded-full bg-mono-700 flex items-center justify-center font-bold text-xs">
-                {user.email?.[0]?.toUpperCase()}
-              </div>
-            )}
+            <div className="w-8 h-8 rounded-full bg-mono-700 flex items-center justify-center font-bold text-xs">
+              {user.email?.[0]?.toUpperCase()}
+            </div>
             <div className="flex flex-col truncate">
               <span className="text-xs font-semibold truncate text-white">
                 {user.displayName || "Admin User"}
               </span>
-              <span className="text-[10px] text-mono-500 truncate">{user.email}</span>
+              <span className="text-[10px] text-mono-500 truncate">
+                {user.email}
+              </span>
             </div>
           </div>
 
@@ -141,7 +135,8 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
           <nav className="flex flex-col gap-2">
             {ADMIN_NAV.map((item) => {
               const Icon = item.icon;
-              const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+              const isActive =
+                pathname === item.href || pathname.startsWith(item.href + "/");
               return (
                 <Link
                   key={item.name}
@@ -163,7 +158,11 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
         {/* Bottom Actions */}
         <div className="flex flex-col gap-3 pt-6 border-t border-mono-700 mt-6">
           <Link href="/" target="_blank">
-            <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-xs">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start gap-2 text-xs"
+            >
               <Globe className="w-4 h-4" />
               <span>LIHAT WEBSITE</span>
             </Button>
@@ -182,12 +181,18 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Main Admin Content Area */}
-      <main className="flex-1 p-4 md:p-12 overflow-y-auto bg-black min-w-0">{children}</main>
+      <main className="flex-1 p-4 md:p-12 overflow-y-auto bg-black min-w-0">
+        {children}
+      </main>
     </div>
   );
 }
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <AuthProvider>
       <AdminLayoutContent>{children}</AdminLayoutContent>

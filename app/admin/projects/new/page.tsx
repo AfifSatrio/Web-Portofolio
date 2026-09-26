@@ -6,7 +6,6 @@ import Link from "next/link";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
-import { ImageUpload } from "@/components/ui/ImageUpload";
 import { ArrowLeft, Save } from "lucide-react";
 import { adminFetch } from "@/lib/admin-api";
 import { notifyContentRefresh } from "@/lib/content-refresh";
@@ -16,7 +15,6 @@ export default function NewProjectPage() {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    thumbnail_url: "",
     tech_stack: "",
     demo_url: "",
     repo_url: "",
@@ -34,8 +32,8 @@ export default function NewProjectPage() {
 
     const payload = {
       title: formData.title,
+      thumbnail_url: "", // Compatibility with the existing database schema.
       description: formData.description,
-      thumbnail_url: formData.thumbnail_url || "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=1000&auto=format&fit=crop",
       tech_stack: techArray,
       demo_url: formData.demo_url || null,
       repo_url: formData.repo_url || null,
@@ -70,12 +68,15 @@ export default function NewProjectPage() {
         <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">
           {"// CREATE NEW"}
         </span>
-        <h1 className="font-archivo text-2xl md:text-3xl font-black uppercase text-white tracking-tight mt-1">
+        <h1 className="font-sans text-2xl md:text-3xl font-black uppercase text-white tracking-tight mt-1">
           TAMBAH PROYEK BARU
         </h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-mono-900 border border-mono-700 p-4 md:p-8 rounded-card flex flex-col gap-6">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-mono-900 border border-mono-700 p-4 md:p-8 rounded-card flex flex-col gap-6"
+      >
         <Input
           label="Judul Proyek *"
           placeholder="e.g. E-Commerce Dashboard"
@@ -90,13 +91,9 @@ export default function NewProjectPage() {
           required
           rows={4}
           value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-        />
-
-        <ImageUpload
-          label="Thumbnail / Screenshot Proyek *"
-          value={formData.thumbnail_url}
-          onChange={(url) => setFormData({ ...formData, thumbnail_url: url })}
+          onChange={(e) =>
+            setFormData({ ...formData, description: e.target.value })
+          }
         />
 
         <Input
@@ -104,7 +101,9 @@ export default function NewProjectPage() {
           placeholder="Next.js, TypeScript, Tailwind CSS, Supabase"
           required
           value={formData.tech_stack}
-          onChange={(e) => setFormData({ ...formData, tech_stack: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, tech_stack: e.target.value })
+          }
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -112,14 +111,18 @@ export default function NewProjectPage() {
             label="URL Live Demo (Opsional)"
             placeholder="https://my-demo.com"
             value={formData.demo_url}
-            onChange={(e) => setFormData({ ...formData, demo_url: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, demo_url: e.target.value })
+            }
           />
 
           <Input
             label="URL Repository GitHub (Opsional)"
             placeholder="https://github.com/user/repo"
             value={formData.repo_url}
-            onChange={(e) => setFormData({ ...formData, repo_url: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, repo_url: e.target.value })
+            }
           />
         </div>
 

@@ -7,7 +7,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
 }
 
-export const buttonStyles = ({
+const buttonStyles = ({
   variant = "primary",
   size = "md",
   className = "",

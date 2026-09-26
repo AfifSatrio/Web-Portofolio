@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { getProjects } from "@/lib/content-data";
 import { CONTACT_HREF } from "@/lib/profile-content";
-import { ProjectPreview } from "@/components/stargazer/ProjectPreview";
 import { cache } from "react";
 
 export const dynamic = "force-dynamic";
@@ -30,19 +29,14 @@ export default async function ProjectPage({
   const project = await findProject(params.id);
   if (!project) notFound();
   return (
-    <div className="sg-container project-detail">
+    <div className="content-container project-detail">
       <div className="detail-heading">
-        <Link href="/#projects" className="sg-text-link">
+        <Link href="/#projects" className="text-link">
           <ArrowLeft size={17} aria-hidden="true" /> Back to selected work
         </Link>
-        <p className="sg-eyebrow">PROJECT / WEB DEVELOPMENT</p>
+        <p className="eyebrow">PROJECT / WEB DEVELOPMENT</p>
         <h1>{project.title}</h1>
       </div>
-      <ProjectPreview
-        src={project.thumbnail_url}
-        title={project.title}
-        featured
-      />
       <div className="detail-body">
         <div>
           <h2>About the project</h2>
@@ -50,7 +44,7 @@ export default async function ProjectPage({
         </div>
         <aside>
           <h2>The toolkit</h2>
-          <div className="sg-tags">
+          <div className="detail-tags">
             {project.tech_stack.map((tech) => (
               <span key={tech}>{tech}</span>
             ))}
@@ -60,7 +54,7 @@ export default async function ProjectPage({
               href={project.demo_url}
               target="_blank"
               rel="noreferrer"
-              className="sg-button"
+              className="solid-link"
             >
               Visit live website <ArrowUpRight size={17} aria-hidden="true" />
             </a>
@@ -71,7 +65,7 @@ export default async function ProjectPage({
                 href={project.repo_url}
                 target="_blank"
                 rel="noreferrer"
-                className="sg-text-link"
+                className="text-link"
               >
                 View source code <ArrowUpRight size={17} aria-hidden="true" />
               </a>
@@ -81,7 +75,7 @@ export default async function ProjectPage({
       </div>
       <div className="detail-cta">
         <p>Have something like this in mind?</p>
-        <a href={CONTACT_HREF} className="sg-button">
+        <a href={CONTACT_HREF} className="solid-link">
           Let’s talk <ArrowUpRight size={17} aria-hidden="true" />
         </a>
       </div>

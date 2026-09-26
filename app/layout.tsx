@@ -1,15 +1,6 @@
 import type { Metadata } from "next";
-import { Archivo_Black } from "next/font/google";
 import "./globals.css";
-import "./stargazer.css";
 import "./portfolio.css";
-
-const archivoBlack = Archivo_Black({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-archivo",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: {
@@ -26,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${archivoBlack.variable} scroll-smooth`}>
+    <html lang="en" className="scroll-smooth">
       <body className="bg-black text-white antialiased min-h-screen flex flex-col">
         {children}
       </body>

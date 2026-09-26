@@ -1,7 +1,7 @@
 "use client";
 
-export const CONTENT_REFRESH_EVENT = "portfolio-content-refresh";
-export const CONTENT_REFRESH_STORAGE_KEY = "portfolio-content-refresh-at";
+const CONTENT_REFRESH_EVENT = "portfolio-content-refresh";
+const CONTENT_REFRESH_STORAGE_KEY = "portfolio-content-refresh-at";
 
 export const notifyContentRefresh = () => {
   const timestamp = Date.now().toString();

@@ -8,7 +8,8 @@ import { ShieldAlert, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminLoginPage() {
-  const { user, isWhitelisted, loginWithGoogle, loading, authError } = useAuth();
+  const { user, isWhitelisted, loginWithGoogle, loading, authError } =
+    useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -29,7 +30,9 @@ export default function AdminLoginPage() {
       <div className="min-h-screen bg-black text-white flex items-center justify-center font-sans">
         <div className="flex flex-col items-center gap-4">
           <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
-          <span className="text-xs uppercase tracking-widest text-mono-500">MEMUAT SESI...</span>
+          <span className="text-xs uppercase tracking-widest text-mono-500">
+            MEMUAT SESI...
+          </span>
         </div>
       </div>
     );
@@ -57,11 +60,12 @@ export default function AdminLoginPage() {
           <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">
             {"// PRIVATE ACCESS ONLY"}
           </span>
-          <h1 className="font-archivo text-3xl font-black uppercase text-white tracking-tight">
+          <h1 className="font-sans text-3xl font-black uppercase text-white tracking-tight">
             ADMIN LOGIN
           </h1>
           <p className="text-xs text-mono-500">
-            Masuk dengan Google Sign-In. Hanya email yang terdaftar di whitelist yang memiliki hak akses.
+            Masuk dengan Google Sign-In. Hanya email yang terdaftar di whitelist
+            yang memiliki hak akses.
           </p>
         </div>
 

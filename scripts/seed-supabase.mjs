@@ -17,7 +17,9 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl || !serviceRoleKey) {
-  throw new Error("NEXT_PUBLIC_SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY harus terisi di .env.");
+  throw new Error(
+    "NEXT_PUBLIC_SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY harus terisi di .env.",
+  );
 }
 
 const FALLBACK_TIMESTAMP = "2026-01-01T00:00:00.000Z";
@@ -33,8 +35,9 @@ const projects = [
   {
     id: "00000000-0000-4000-8000-000000000201",
     title: "Ratih Creative Media Website & UI/UX",
-    description: "Perancangan UI/UX dan pengembangan website profil untuk Ratih Creative Media, sebuah production house di bidang industri kreatif.",
-    thumbnail_url: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=1000&auto=format&fit=crop",
+    description:
+      "Perancangan UI/UX dan pengembangan website profil untuk Ratih Creative Media, sebuah production house di bidang industri kreatif.",
+    thumbnail_url: "",
     tech_stack: ["Next.js", "Tailwind CSS", "Figma", "UI/UX"],
     demo_url: "https://github.com/afifsatrio",
     repo_url: "https://github.com/afifsatrio",
@@ -44,8 +47,9 @@ const projects = [
   {
     id: "00000000-0000-4000-8000-000000000202",
     title: "Creanomic 2024 Event Website & Media Design",
-    description: "Pembuatan website profile acara, desain logo, feeds, merchandise, serta koordinasi tim DDM-IT Creanomic 2024.",
-    thumbnail_url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop",
+    description:
+      "Pembuatan website profile acara, desain logo, feeds, merchandise, serta koordinasi tim DDM-IT Creanomic 2024.",
+    thumbnail_url: "",
     tech_stack: ["Laravel", "Tailwind CSS", "Figma", "phpMyAdmin"],
     demo_url: "https://github.com/afifsatrio",
     repo_url: "https://github.com/afifsatrio",
@@ -55,8 +59,9 @@ const projects = [
   {
     id: "00000000-0000-4000-8000-000000000203",
     title: "PKKMB YUWARAJA XVI Official Website",
-    description: "Perancangan desain UI/UX dan sistem informasi acara PKKMB Yuwaraja XVI serta manajemen live streaming OBS.",
-    thumbnail_url: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1000&auto=format&fit=crop",
+    description:
+      "Perancangan desain UI/UX dan sistem informasi acara PKKMB Yuwaraja XVI serta manajemen live streaming OBS.",
+    thumbnail_url: "",
     tech_stack: ["Next.js", "Tailwind CSS", "Figma", "OBS Studio"],
     demo_url: "https://github.com/afifsatrio",
     repo_url: "https://github.com/afifsatrio",
@@ -66,8 +71,9 @@ const projects = [
   {
     id: "00000000-0000-4000-8000-000000000204",
     title: "Company Profile BEM FV UB 2024",
-    description: "Konsep proker video company profile dan maintenance portal website resmi BEM Fakultas Vokasi Universitas Brawijaya 2024.",
-    thumbnail_url: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop",
+    description:
+      "Konsep proker video company profile dan maintenance portal website resmi BEM Fakultas Vokasi Universitas Brawijaya 2024.",
+    thumbnail_url: "",
     tech_stack: ["Laravel", "Tailwind CSS", "phpMyAdmin", "Puskominfo"],
     demo_url: "https://github.com/afifsatrio",
     repo_url: "https://github.com/afifsatrio",

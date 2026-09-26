@@ -12,11 +12,6 @@ export interface PortfolioContent {
   skills: Skill[];
 }
 
-export {
-  PROFILE_ABOUT as EMPTY_ABOUT,
-  normalizeAbout,
-} from "@/lib/profile-content";
-
 export async function getProjects(): Promise<Project[]> {
   try {
     const { data, error } = await createSupabaseAdminClient()
@@ -31,7 +26,7 @@ export async function getProjects(): Promise<Project[]> {
   }
 }
 
-export async function getSkills(): Promise<Skill[]> {
+async function getSkills(): Promise<Skill[]> {
   try {
     const { data, error } = await createSupabaseAdminClient()
       .from("skills")

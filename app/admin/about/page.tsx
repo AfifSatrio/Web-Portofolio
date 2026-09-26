@@ -32,7 +32,9 @@ export default function AdminAboutPage() {
   useEffect(() => {
     async function loadAbout() {
       try {
-        const { about } = await adminFetch<{ about: AboutContent | null }>("/api/admin/about");
+        const { about } = await adminFetch<{ about: AboutContent | null }>(
+          "/api/admin/about",
+        );
         if (about) {
           setFormData({
             tagline: about.tagline || "",
@@ -78,7 +80,7 @@ export default function AdminAboutPage() {
         <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">
           {"// EDIT PROFILE"}
         </span>
-        <h1 className="font-archivo text-3xl font-black uppercase text-white tracking-tight mt-1">
+        <h1 className="font-sans text-3xl font-black uppercase text-white tracking-tight mt-1">
           KELOLA ABOUT &amp; BIO
         </h1>
       </div>
@@ -90,13 +92,18 @@ export default function AdminAboutPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-mono-900 border border-mono-700 p-8 rounded-card flex flex-col gap-6">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-mono-900 border border-mono-700 p-8 rounded-card flex flex-col gap-6"
+      >
         <Input
           label="Tagline Singkat (Hero Section) *"
           placeholder="Frontend Developer | Passionate about Clean UI"
           required
           value={formData.tagline}
-          onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, tagline: e.target.value })
+          }
         />
 
         <Textarea

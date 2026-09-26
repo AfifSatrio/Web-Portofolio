@@ -1,6 +1,6 @@
 import React, { useId } from "react";
 import { cn } from "@/lib/utils";
-export interface TextareaProps
+interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   error?: string;

@@ -3,10 +3,17 @@ import type { AboutContent, Skill } from "@/types";
 export const CONTACT_EMAIL = "afifsatria2108@gmail.com";
 export const CONTACT_HREF = `mailto:${CONTACT_EMAIL}`;
 
-// Profile copy supplied by Afif from his Upwork profile. Structured sections live here;
-// the introduction and skill records remain editable through the existing admin.
-export const UPWORK_URL =
-  "https://www.upwork.com/freelancers/~01cedcacc38e8c6d49";
+export const TECH_STACK = [
+  "Next.js",
+  "Laravel",
+  "Tailwind CSS",
+  "MySQL",
+  "Figma",
+  "GitHub",
+];
+
+// Profile copy supplied by Afif from his Upwork profile.
+// The introduction and skill records remain editable through the existing admin.
 export const SKILL_CATEGORIES = [
   "Development",
   "Frontend",
@@ -75,7 +82,7 @@ const skillRevisions = [
   ["Manajemen Waktu", "Soft Skills", "Hosting Setup", "Tools"],
   ["Komunikasi", "Soft Skills", "UI/UX Prototyping", "Design"],
 ];
-export const PROFILE_SKILLS: Skill[] = skillRevisions.map(
+const PROFILE_SKILLS: Skill[] = skillRevisions.map(
   ([, , name, category], index) => ({
     id: `00000000-0000-4000-8000-000000000${101 + index}`,
     name,
@@ -97,30 +104,3 @@ export function normalizeSkills(skills: Skill[]): Skill[] {
       : skill;
   });
 }
-
-export const SERVICES = [
-  {
-    title: "Business websites",
-    description:
-      "Company profiles and business websites built around your content, services, and goals.",
-    detail: "Company profiles · Business websites",
-  },
-  {
-    title: "Custom web applications",
-    description:
-      "Full-stack applications using Next.js or Laravel, tailored to your requirements and business workflows.",
-    detail: "Web applications · Information systems",
-  },
-  {
-    title: "Responsive interfaces",
-    description:
-      "Interfaces using Tailwind CSS that adapt across screen sizes, with UI/UX prototyping in Figma.",
-    detail: "Responsive design · UI/UX prototyping",
-  },
-  {
-    title: "Back-end development",
-    description:
-      "Back-end functionality to support your website’s features, content, and day-to-day workflows.",
-    detail: "Back-end features · Content management",
-  },
-];

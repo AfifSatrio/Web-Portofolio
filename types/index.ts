@@ -24,11 +24,3 @@ export interface AboutContent {
   cv_url?: string | null;
   updated_at: string;
 }
-
-export interface AdminUser {
-  uid: string;
-  email: string | null;
-  displayName: string | null;
-  photoURL: string | null;
-  isWhitelisted: boolean;
-}

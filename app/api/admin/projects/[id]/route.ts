@@ -52,6 +52,7 @@ export async function PATCH(request: NextRequest, { params }: RouteContext) {
     .insert([
       {
         id: params.id,
+        thumbnail_url: "",
         ...payload,
         created_at: new Date().toISOString(),
       },
@@ -71,7 +72,10 @@ export async function DELETE(request: NextRequest, { params }: RouteContext) {
   if ("error" in admin) return admin.error;
   const supabaseAdmin = createSupabaseAdminClient();
 
-  const { error } = await supabaseAdmin.from("projects").delete().eq("id", params.id);
+  const { error } = await supabaseAdmin
+    .from("projects")
+    .delete()
+    .eq("id", params.id);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

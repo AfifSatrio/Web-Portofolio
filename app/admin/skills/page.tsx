@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { Plus, Trash2 } from "lucide-react";
 import { Skill } from "@/types";
@@ -71,7 +70,7 @@ export default function AdminSkillsPage() {
         <span className="text-xs font-semibold uppercase tracking-widest text-mono-500">
           {"// MANAGE SKILLS"}
         </span>
-        <h1 className="font-archivo text-3xl font-black uppercase text-white tracking-tight mt-1">
+        <h1 className="font-sans text-3xl font-black uppercase text-white tracking-tight mt-1">
           KELOLA KEAHLIAN &amp; STACK
         </h1>
       </div>
@@ -130,7 +129,7 @@ export default function AdminSkillsPage() {
           return (
             <Card
               key={cat}
-              hoverEffect={false}
+
               className="p-6 flex flex-col gap-4"
             >
               <div className="flex items-center justify-between border-b border-mono-700 pb-3">

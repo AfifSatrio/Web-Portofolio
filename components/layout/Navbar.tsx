@@ -7,8 +7,8 @@ import { Menu, X, ArrowUpRight } from "lucide-react";
 import { CONTACT_HREF } from "@/lib/profile-content";
 
 const links = [
-  { name: "Work", href: "/#projects" },
   { name: "About", href: "/#about" },
+  { name: "Portfolio", href: "/#projects" },
   { name: "Contact", href: "/#contact" },
 ];
 
@@ -43,15 +43,24 @@ export function Navbar() {
   }, [isOpen]);
   return (
     <>
-      <header className="sg-header">
-        <div className="sg-container sg-nav">
-          <Link href="/" aria-label="Afif Satrio home" className="sg-brand">
+      <header className="site-header">
+        <div className="content-container site-nav">
+          <Link href="/" aria-label="Afif Satrio home" className="site-brand">
             afif satrio
-            <span className="brand-period">.</span>
+            <span>®</span>
           </Link>
-          <nav aria-label="Main navigation" className="sg-desktop-nav">
+          <nav aria-label="Main navigation" className="desktop-nav">
             {links.map((link) => (
-              <Link key={link.name} href={link.href}>
+              <Link
+                key={link.name}
+                href={link.href}
+                aria-current={
+                  pathname === link.href ||
+                  (link.name === "Portfolio" && pathname.startsWith("/projects"))
+                    ? "page"
+                    : undefined
+                }
+              >
                 {link.name}
               </Link>
             ))}
@@ -66,7 +75,7 @@ export function Navbar() {
             aria-label="Open navigation menu"
             aria-expanded={isOpen}
             aria-controls="mobile-navigation"
-            className="sg-menu-button"
+            className="menu-button"
           >
             <Menu size={23} aria-hidden="true" />
           </button>
@@ -78,7 +87,7 @@ export function Navbar() {
         aria-labelledby="mobile-navigation-title"
         onCancel={() => setIsOpen(false)}
         onClose={() => setIsOpen(false)}
-        className="sg-mobile-dialog"
+        className="mobile-dialog"
         onKeyDown={(event) => {
           if (event.key !== "Tab") return;
           const controls = event.currentTarget.querySelectorAll<HTMLElement>(
@@ -96,13 +105,13 @@ export function Navbar() {
         }}
       >
         <div className="mobile-menu-top">
-          <h2 id="mobile-navigation-title" className="sg-eyebrow">
+          <h2 id="mobile-navigation-title" className="eyebrow">
             Explore
           </h2>
           <button
             type="button"
             onClick={() => setIsOpen(false)}
-            className="sg-menu-close"
+            className="menu-close"
             aria-label="Close navigation menu"
           >
             <X size={24} />
@@ -124,7 +133,7 @@ export function Navbar() {
         <a
           href={CONTACT_HREF}
           onClick={() => setIsOpen(false)}
-          className="sg-button"
+          className="solid-link"
         >
           Let’s talk <ArrowUpRight size={18} aria-hidden="true" />
         </a>
