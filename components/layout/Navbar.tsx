@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, ArrowUpRight } from "lucide-react";
-import { contactHref, site } from "@/content/site";
+import { site } from "@/content/site";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -59,9 +59,6 @@ export function Navbar() {
               </Link>
             ))}
           </nav>
-          <a className="nav-contact" href={contactHref}>
-            Let’s talk <ArrowUpRight size={16} aria-hidden="true" />
-          </a>
           <button
             ref={trigger}
             type="button"
@@ -124,13 +121,6 @@ export function Navbar() {
             </Link>
           ))}
         </nav>
-        <a
-          href={contactHref}
-          onClick={() => setIsOpen(false)}
-          className="solid-link"
-        >
-          Let’s talk <ArrowUpRight size={18} aria-hidden="true" />
-        </a>
         <p className="mobile-menu-caption">Independent web development.</p>
       </dialog>
     </>

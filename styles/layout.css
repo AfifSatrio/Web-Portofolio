@@ -54,8 +54,7 @@
   font-size: 11px;
   padding-top: 3px;
 }
-.desktop-nav,
-.nav-contact {
+.desktop-nav {
   display: none;
 }
 .menu-button,
@@ -189,16 +188,6 @@
   .desktop-nav a:hover,
   .desktop-nav a[aria-current] {
     color: #fff;
-  }
-  .nav-contact {
-    display: inline-flex;
-    gap: 12px;
-    align-items: center;
-    min-height: 44px;
-    padding-left: 30px;
-    margin-left: 18px;
-    border-left: 1px solid var(--line);
-    font-size: 13px;
   }
   .menu-button {
     display: none;
