@@ -4,13 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, ArrowUpRight } from "lucide-react";
-import { CONTACT_HREF } from "@/lib/profile-content";
-
-const links = [
-  { name: "About", href: "/#about" },
-  { name: "Portfolio", href: "/#projects" },
-  { name: "Contact", href: "/#contact" },
-];
+import { contactHref, site } from "@/content/site";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -45,27 +39,27 @@ export function Navbar() {
     <>
       <header className="site-header">
         <div className="content-container site-nav">
-          <Link href="/" aria-label="Afif Satrio home" className="site-brand">
-            afif satrio
+          <Link href="/" aria-label={`${site.name} home`} className="site-brand">
+            {site.brand}
             <span>®</span>
           </Link>
           <nav aria-label="Main navigation" className="desktop-nav">
-            {links.map((link) => (
+            {site.navigation.map((link) => (
               <Link
-                key={link.name}
+                key={link.label}
                 href={link.href}
                 aria-current={
                   pathname === link.href ||
-                  (link.name === "Portfolio" && pathname.startsWith("/projects"))
+                  (link.label === "Portfolio" && pathname.startsWith("/projects"))
                     ? "page"
                     : undefined
                 }
               >
-                {link.name}
+                {link.label}
               </Link>
             ))}
           </nav>
-          <a className="nav-contact" href={CONTACT_HREF}>
+          <a className="nav-contact" href={contactHref}>
             Let’s talk <ArrowUpRight size={16} aria-hidden="true" />
           </a>
           <button
@@ -118,20 +112,20 @@ export function Navbar() {
           </button>
         </div>
         <nav aria-label="Mobile navigation">
-          {links.map((link, index) => (
+          {site.navigation.map((link, index) => (
             <Link
               href={link.href}
-              key={link.name}
+              key={link.label}
               onClick={() => setIsOpen(false)}
             >
               <span>0{index + 1}</span>
-              {link.name}
+              {link.label}
               <ArrowUpRight size={23} aria-hidden="true" />
             </Link>
           ))}
         </nav>
         <a
-          href={CONTACT_HREF}
+          href={contactHref}
           onClick={() => setIsOpen(false)}
           className="solid-link"
         >

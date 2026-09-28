@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import type { Project } from "@/types";
+import type { Project } from "@/content/projects";
 
 export function ProjectCard({
   project,
-  index = 1,
+  index,
 }: {
   project: Project;
-  index?: number;
+  index: number;
 }) {
   return (
     <article className="project-row">
@@ -17,7 +17,7 @@ export function ProjectCard({
           <h3>{project.title}</h3>
           <p>{project.description}</p>
           <ul className="project-tech" aria-label="Technologies">
-            {project.tech_stack.map((tech) => (
+            {project.techStack.map((tech) => (
               <li key={tech}>{tech}</li>
             ))}
           </ul>

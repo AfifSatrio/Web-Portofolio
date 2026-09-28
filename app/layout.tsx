@@ -1,14 +1,14 @@
+import { site } from "@/content/site";
+import { SiteLayout } from "@/components/layout/SiteLayout";
 import type { Metadata } from "next";
 import "./globals.css";
-import "./portfolio.css";
+import "@/styles/layout.css";
+import "@/styles/home.css";
+import "@/styles/projects.css";
 
 export const metadata: Metadata = {
-  title: {
-    default: "Afif Satrio | Full Stack Web Developer",
-    template: "%s | Afif Satrio",
-  },
-  description:
-    "Business websites and custom web applications by Afif Satrio. Full stack web development with Next.js, Laravel, and Tailwind CSS.",
+  title: { default: site.title, template: `%s | ${site.name}` },
+  description: site.description,
 };
 
 export default function RootLayout({
@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className="bg-black text-white antialiased min-h-screen flex flex-col">
-        {children}
+        <SiteLayout>{children}</SiteLayout>
       </body>
     </html>
   );

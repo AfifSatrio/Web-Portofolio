@@ -39,17 +39,7 @@ html {
     @apply w-full max-w-container mx-auto px-5 sm:px-8 lg:px-12;
   }
   .eyebrow {
-    @apply text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted;
-  }
-  .page-title {
-    @apply font-sans font-medium text-4xl sm:text-5xl lg:text-6xl tracking-[-0.05em] leading-[1.1] text-ink;
-    text-wrap: balance;
-  }
-  .body-copy {
-    @apply text-base leading-relaxed text-ink-secondary;
-  }
-  .surface-panel {
-    @apply border-t border-line bg-transparent;
+    @apply text-xs font-semibold uppercase tracking-[0.16em] text-neutral-400;
   }
 }
 
